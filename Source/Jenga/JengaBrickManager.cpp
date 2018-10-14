@@ -2,6 +2,7 @@
 
 #include "JengaBrickManager.h"
 #include "Engine/World.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AJengaBrickManager::AJengaBrickManager()
@@ -24,6 +25,18 @@ void AJengaBrickManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	UWorld* world = GetWorld();
+
+	if (m_spawnCount < 18)
+	{
+		//m_jengaBricks[m_spawnCount] = world->SpawnActor<AJengaBrick>(m_brickTemplate, GetInitialiPosition(m_spawnCount), GetInitialRotation(m_spawnCount));
+		//m_jengaBricks[m_spawnCount]->SetActorScale3D(FVector(m_thickness * 5, m_thickness * 15, m_thickness * 3) / 100);
+		for (int i = 0; i < 3; ++i)
+		{
+			//m_jengaBricks[(17 - m_spawnCount) * 3 + i]->m_mesh->SetSimulatePhysics(true);
+		}
+		m_spawnCount++;
+	}
 }
 
 void AJengaBrickManager::SpawnBricks()
@@ -31,8 +44,12 @@ void AJengaBrickManager::SpawnBricks()
 	UWorld* world = GetWorld();
 	for (int i = 0; i < 3 * 18; ++i)
 	{
-		m_jengaBricks[i] = world->SpawnActor<AJengaBrick>(GetInitialiPosition(i), GetInitialRotation(i));
+		m_jengaBricks[i] = world->SpawnActor<AJengaBrick>(m_brickTemplate, GetInitialiPosition(i), GetInitialRotation(i));
 		m_jengaBricks[i]->SetActorScale3D(FVector(m_thickness * 5, m_thickness * 15, m_thickness * 3) / 100);
+		TArray<UStaticMeshComponent*> meshArray;
+		m_jengaBricks[i]->GetComponents<UStaticMeshComponent>(meshArray);
+		m_jengaBricks[i]->m_mesh = meshArray[0];
+		//m_jengaBricks[i]->m_mesh->SetSimulatePhysics(false);		
 	}	
 }
 
@@ -71,11 +88,11 @@ FVector AJengaBrickManager::GetInitialiPosition(int i)
 	int side = i % 3;
 	if (level % 2 == 0)
 	{
-		return FVector((side - 1) * m_thickness * 5, 0, (level + .5) * m_thickness * 3);
+		return FVector((side - 1) * m_thickness * m_spawnXYModifier * 5, 0, (level + .5) * m_thickness * 3 + (level + 1) * m_spawnZModifier);
 	}
 	else
 	{
-		return FVector(0, (side - 1) * m_thickness * 5, (level + .5) * m_thickness * 3);
+		return FVector(0, (side - 1) * m_thickness * m_spawnXYModifier * 5, (level + .5) * m_thickness * 3 + (level + 1) * m_spawnZModifier);
 	}
 }
 

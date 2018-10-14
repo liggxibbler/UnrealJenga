@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Components/BoxComponent.h"
 #include "JengaBrick.generated.h"
 
 UCLASS()
@@ -24,9 +24,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void PostActorCreated() override;
+
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* m_mesh;
 
 	UPROPERTY(EditAnywhere)
-	UPhysicsHandleComponent* m_physics;
+	UBoxComponent* m_physics;
 };

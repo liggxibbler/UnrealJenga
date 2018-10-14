@@ -1,15 +1,24 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "JengaBrick.h"
-
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AJengaBrick::AJengaBrick()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	m_physics = CreateDefaultSubobject<UPhysicsHandleComponent>("Physics");
-	m_mesh = CreateDefaultSubobject<UStaticMeshComponent>("Visual");
+	//m_physics = CreateDefaultSubobject<UBoxComponent>("Physics");
+	//m_mesh = CreateDefaultSubobject<UStaticMeshComponent>("Visual");
+	//m_mesh->SetSimulatePhysics(false);
+}
+
+void AJengaBrick::PostActorCreated()
+{
+	Super::PostActorCreated();
+
+	//m_mesh->SetSimulatePhysics(false);
+
 }
 
 // Called when the game starts or when spawned

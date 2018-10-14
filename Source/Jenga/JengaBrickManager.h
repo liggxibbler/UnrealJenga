@@ -36,5 +36,16 @@ private:
 	int GetLevel(float height);	
 
 	UPROPERTY(EditAnywhere)
-	float m_thickness;	
+	float m_thickness;
+
+	UPROPERTY(EditAnywhere)
+	float m_spawnZModifier = 1.1;
+
+	UPROPERTY(EditAnywhere)
+	float m_spawnXYModifier = 1.05;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AJengaBrick> m_brickTemplate;
+
+	int m_spawnCount = 0;
 };

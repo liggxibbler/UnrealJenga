@@ -49,6 +49,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void ClearStacks();
 	void AlignBricks(); // Don't forget to set angular and linear velocities to zero
 	void NewGame(int playerCount);
 

@@ -51,12 +51,29 @@ void AJengaController::Tick(float DeltaTime)
 	{
 		Redo();
 	}
-	/*if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::P))
+	
+	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::N))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Push Redo Stack"));
-		m_brickManager->InitializeBricks();
-	}*/
+		NewGame(m_playerCount);
+	}
 
+}
+
+void AJengaController::ClearStacks()
+{
+	while (!m_undoStack.empty())
+	{
+		auto top = m_undoStack.top();
+		delete top;
+		m_undoStack.pop();
+	}
+
+	while (!m_redoStack.empty())
+	{
+		auto top = m_redoStack.top();
+		delete top;
+		m_redoStack.pop();
+	}
 }
 
 void AJengaController::AlignBricks()
@@ -66,6 +83,8 @@ void AJengaController::AlignBricks()
 
 void AJengaController::NewGame(int playerCount)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, TEXT("Starting new game"));
+	ClearStacks();
 	m_playerCount = playerCount;
 	m_brickManager->InitializeBricks();
 	OnBeginTurn();

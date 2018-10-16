@@ -36,6 +36,8 @@ public:
 	TowerSnapshot* GetSnapshot();
 	void ApplySnapshot(TowerSnapshot* snapshot);
 
+	bool HasTowerFallen(TowerSnapshot* snapshot);
+
 private:
 	AJengaBrick* m_jengaBricks[BRICK_COUNT];
 	int GetLevel(float height);	

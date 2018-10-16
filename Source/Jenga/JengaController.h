@@ -19,7 +19,8 @@ public:
 	enum Phase
 	{
 		PhaseInit,
-		PhaseRemoval,
+		PhaseRemovalSelect,
+		PhaseRemovalSlide,
 		PhasePlacement,
 		PhaseWait,
 	};
@@ -34,8 +35,11 @@ private:
 	UPROPERTY(EditAnywhere)
 	int m_playerCount;
 
-	Phase m_phase = PhaseRemoval;
+	Phase m_phase = PhaseInit;
 	int m_turn = 0;
+	int m_currentPlayer = 0;
+
+	AJengaBrick* m_selectedBrick = nullptr;
 
 public:	
 	// Sets default values for this actor's properties
@@ -52,6 +56,9 @@ public:
 	void ClearStacks();
 	void AlignBricks(); // Don't forget to set angular and linear velocities to zero
 	void NewGame(int playerCount);
+	void GameOver();
+
+	bool SelectBrick();
 
 	void OnBeginTurn();
 	void OnFinishTurn();

@@ -138,6 +138,11 @@ void AJengaBrickManager::ApplySnapshot(TowerSnapshot* snapshot)
 	}
 }
 
+bool AJengaBrickManager::HasTowerFallen(TowerSnapshot* snapshot)
+{
+	return false;
+}
+
 int AJengaBrickManager::GetLevel(float height)
 {
 	return (height - m_thickness * 3 * .5) / (m_thickness * 3);

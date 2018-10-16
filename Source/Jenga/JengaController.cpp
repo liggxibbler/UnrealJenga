@@ -26,33 +26,58 @@ void AJengaController::BeginPlay()
 // Called every frame
 void AJengaController::Tick(float DeltaTime)
 {
+	auto pc = GetWorld()->GetFirstPlayerController();
+
+	switch (m_phase)
+	{
+	case Phase::PhaseInit:
+		//	TODO I don't think there's more to be done here!
+		if (pc->WasInputKeyJustPressed(EKeys::S))
+		{
+			m_phase = Phase::PhaseRemovalSelect;
+		}
+		break;
+	case Phase::PhaseRemovalSelect:
+		//	
+		SelectBrick();
+		break;
+	case Phase::PhaseRemovalSlide:
+		break;	
+	case Phase::PhasePlacement:
+		break;
+	case Phase::PhaseWait:
+		break;
+	default:
+		break;
+	}
+
 	Super::Tick(DeltaTime);
 
-	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::SpaceBar))
+	if (pc->WasInputKeyJustPressed(EKeys::SpaceBar))
 	{
 		m_brickManager->InitializeBricks();
 	}
 
-	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::Enter))
+	if (pc->WasInputKeyJustPressed(EKeys::Enter))
 	{
 		m_brickManager->Explode();
 	}
 
-	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::U))
+	if (pc->WasInputKeyJustPressed(EKeys::U))
 	{
 		Undo();
 	}
-	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::V))
+	if (pc->WasInputKeyJustPressed(EKeys::V))
 	{
 		PushUndoStack();
 	}
 
-	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::R))
+	if (pc->WasInputKeyJustPressed(EKeys::R))
 	{
 		Redo();
 	}
 	
-	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::N))
+	if (pc->WasInputKeyJustPressed(EKeys::N))
 	{
 		NewGame(m_playerCount);
 	}
@@ -90,15 +115,38 @@ void AJengaController::NewGame(int playerCount)
 	OnBeginTurn();
 }
 
+void AJengaController::GameOver()
+{
+
+}
+
+bool AJengaController::SelectBrick()
+{
+	// TODO this checks for mouse clicks!
+	//pc->WasInputKeyJustReleased(EKeys::LeftMouseButton)
+
+	FHitResult hit;
+	auto controller = GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, hit);
+	if (hit.bBlockingHit)
+	{
+		if (nullptr != hit.Actor)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, hit.Actor->GetName());
+		}
+	}
+	return false;
+}
+
 
 void AJengaController::OnBeginTurn()
 {
-	m_phase = PhaseRemoval;
+	m_phase = PhaseRemovalSelect;
 	PushUndoStack();
 }
 void AJengaController::OnFinishTurn()
 {	
-	m_turn = (m_turn + 1) % m_playerCount;
+	++m_turn;
+	m_currentPlayer = m_turn % m_playerCount;
 	OnBeginTurn();
 }
 
@@ -109,6 +157,7 @@ void AJengaController::OnBrickRemoved()
 void AJengaController::OnBrickPlaced()
 {
 	m_phase = PhaseWait;
+	// TODO
 }
 
 void AJengaController::PushUndoStack()
@@ -132,6 +181,9 @@ void AJengaController::Undo()
 	}
 	else
 	{
+		--m_turn;
+		m_currentPlayer = m_turn % m_playerCount;
+
 		PushRedoStack();
 		auto snapshot = m_undoStack.top();
 		m_brickManager->ApplySnapshot(snapshot);		
@@ -148,6 +200,9 @@ void AJengaController::Redo()
 	}
 	else
 	{
+		++m_turn;
+		m_currentPlayer = m_turn % m_playerCount;
+
 		PushUndoStack();
 		auto snapshot = m_redoStack.top();
 		m_brickManager->ApplySnapshot(snapshot);

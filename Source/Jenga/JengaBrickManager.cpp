@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "JengaBrickManager.h"
+
 #include <string>
 
-#include "JengaBrickManager.h"
 #include "Engine/World.h"
 #include "EngineGlobals.h"
 #include "Components/StaticMeshComponent.h"

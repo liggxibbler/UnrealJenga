@@ -35,7 +35,7 @@ private:
 	AJengaBrickManager* m_brickManager;
 
 	UPROPERTY(EditAnywhere)
-	int m_playerCount;
+	int m_playerCount = 1;
 
 	Phase m_phase = PhaseInit;
 	int m_turn = 0;

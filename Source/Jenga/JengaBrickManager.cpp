@@ -144,6 +144,11 @@ bool AJengaBrickManager::HasTowerFallen(TowerSnapshot* snapshot)
 	return false;
 }
 
+void AJengaBrickManager::SetMaterial(AJengaBrick* brick, bool selected)
+{
+	brick->m_mesh->SetMaterial(0, selected ? m_selectedMaterial : m_normalMaterial);
+}
+
 int AJengaBrickManager::GetLevel(float height)
 {
 	return (height - m_thickness * 3 * .5) / (m_thickness * 3);

@@ -13,12 +13,9 @@ AJengaBrick::AJengaBrick()
 	//m_mesh->SetSimulatePhysics(false);
 }
 
-void AJengaBrick::PostActorCreated()
+void AJengaBrick::SetMaterial(UMaterialInterface* material)
 {
-	Super::PostActorCreated();
-
-	//m_mesh->SetSimulatePhysics(false);
-
+	m_mesh->SetMaterial(0, material);
 }
 
 // Called when the game starts or when spawned

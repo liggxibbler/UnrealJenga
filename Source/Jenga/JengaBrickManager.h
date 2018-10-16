@@ -38,6 +38,8 @@ public:
 
 	bool HasTowerFallen(TowerSnapshot* snapshot);
 
+	void SetMaterial(AJengaBrick* brick, bool selected);
+
 private:
 	AJengaBrick* m_jengaBricks[BRICK_COUNT];
 	int GetLevel(float height);	
@@ -53,6 +55,11 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AJengaBrick> m_brickTemplate;
+
+	UPROPERTY(EditAnywhere)
+	UMaterialInterface* m_normalMaterial;
+	UPROPERTY(EditAnywhere)
+	UMaterialInterface* m_selectedMaterial;
 
 	FVector* GetLocationSnapshot();
 	FRotator* GetRotationSnapshot();

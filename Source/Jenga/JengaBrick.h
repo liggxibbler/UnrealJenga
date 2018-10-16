@@ -24,7 +24,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void PostActorCreated() override;
+	void SetMaterial(UMaterialInterface* material);
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* m_mesh;

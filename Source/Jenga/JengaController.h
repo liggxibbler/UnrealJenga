@@ -25,6 +25,7 @@ public:
 		PhaseRemovalSlide,
 		PhasePlacement,
 		PhaseWait,
+		PhaseGameOver,
 	};
 
 private:

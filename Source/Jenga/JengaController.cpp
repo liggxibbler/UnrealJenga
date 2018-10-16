@@ -21,6 +21,7 @@ void AJengaController::BeginPlay()
 	Super::BeginPlay();
 	
 	pc = GetWorld()->GetFirstPlayerController();
+	pc->bShowMouseCursor = true;
 }
 
 // Called every frame
@@ -42,6 +43,11 @@ void AJengaController::Tick(float DeltaTime)
 		}
 		break;
 	case Phase::PhaseRemovalSlide:
+		if (pc->WasInputKeyJustPressed(EKeys::BackSpace))
+		{
+			m_brickManager->SetMaterial(m_selectedBrick, false);
+			m_phase = Phase::PhaseRemovalSelect;
+		}
 		break;	
 	case Phase::PhasePlacement:
 		break;
@@ -136,6 +142,7 @@ bool AJengaController::SelectBrick()
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick selected!"));
 				m_selectedBrick = (AJengaBrick*)hit.GetActor();
+				m_brickManager->SetMaterial(m_selectedBrick, true);
 				return true;
 			}
 		}
@@ -150,6 +157,12 @@ bool AJengaController::SelectBrick()
 
 void AJengaController::OnBeginTurn()
 {
+	if (nullptr != m_selectedBrick)
+	{
+		m_brickManager->SetMaterial(m_selectedBrick, false);
+		m_selectedBrick = nullptr;
+	}
+
 	m_phase = PhaseRemovalSelect;
 	PushUndoStack();
 }

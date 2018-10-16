@@ -29,13 +29,11 @@ public:
 	void DestroyBricks();
 	AJengaBrick** GetBricks();
 	
-	FVector* GetLocationSnapshot();
-	FRotator* GetRotationSnapshot();
-	
 	FVector GetInitialiPosition(int i);
 	FRotator GetInitialRotation(int i);
 
-	//void ApplySnapshot(TowerSnapshot* snapshot);
+	TowerSnapshot* GetSnapshot();
+	void ApplySnapshot(TowerSnapshot* snapshot);
 
 private:
 	AJengaBrick* m_jengaBricks[BRICK_COUNT];
@@ -53,5 +51,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AJengaBrick> m_brickTemplate;
 
-	int m_spawnCount = 0;
+	FVector* GetLocationSnapshot();
+	FRotator* GetRotationSnapshot();
 };

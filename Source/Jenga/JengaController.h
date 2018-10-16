@@ -18,20 +18,24 @@ class JENGA_API AJengaController : public AActor
 public:
 	enum Phase
 	{
+		PhaseInit,
 		PhaseRemoval,
 		PhasePlacement,
 		PhaseWait,
 	};
 
 private:
-	std::stack<FVector[BRICK_COUNT]> m_undoStack;
-	std::stack<FVector[BRICK_COUNT]> m_redoStack;
+	std::stack<TowerSnapshot*> m_undoStack;
+	std::stack<TowerSnapshot*> m_redoStack;
 
 	UPROPERTY(EditAnywhere)
 	AJengaBrickManager* m_brickManager;
 
 	UPROPERTY(EditAnywhere)
 	int m_playerCount;
+
+	Phase m_phase = PhaseRemoval;
+	int m_turn = 0;
 
 public:	
 	// Sets default values for this actor's properties
@@ -47,6 +51,13 @@ public:
 
 	void AlignBricks(); // Don't forget to set angular and linear velocities to zero
 	void NewGame(int playerCount);
+
+	void OnBeginTurn();
+	void OnFinishTurn();
+	
+	void OnBrickRemoved();
+	void OnBrickPlaced();
+	
 
 	void Undo();
 	void Redo();

@@ -108,6 +108,22 @@ FRotator AJengaBrickManager::GetInitialRotation(int i)
 	return FRotator(0, (level % 2 == 0) ? 0 : 90, 0);
 }
 
+TowerSnapshot* AJengaBrickManager::GetSnapshot()
+{
+	return new TowerSnapshot(GetLocationSnapshot(), GetRotationSnapshot());
+}
+
+void AJengaBrickManager::ApplySnapshot(TowerSnapshot* snapshot)
+{
+	for (int i = 0; i < BRICK_COUNT; ++i)
+	{
+		m_jengaBricks[i]->SetActorLocation(snapshot[i].GetSnapshot()->location);
+		m_jengaBricks[i]->SetActorRotation(snapshot[i].GetSnapshot()->rotation);
+		m_jengaBricks[i]->m_mesh->SetPhysicsLinearVelocity(FVector(0, 0, 0));
+		m_jengaBricks[i]->m_mesh->SetPhysicsAngularVelocity(FVector(0, 0, 0));
+	}
+}
+
 int AJengaBrickManager::GetLevel(float height)
 {
 	return (height - m_thickness * 3 * .5) / (m_thickness * 3);

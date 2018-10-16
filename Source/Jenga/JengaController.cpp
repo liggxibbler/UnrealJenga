@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "JengaController.h"
+#include "Engine/World.h"
+#include "EngineGlobals.h"
+#include "GameFramework/PlayerController.h"
 
 
 // Sets default values
@@ -25,6 +28,40 @@ void AJengaController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::SpaceBar))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Restting"));
+		m_brickManager->InitializeBricks();
+	}
+
+	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::Enter))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Exploding"));
+		m_brickManager->Explode();
+	}
+
+	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::U))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Pop Undo Stack"));
+		Undo();
+	}
+	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::V))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Push Undo Stack"));
+		PushUndoStack();
+	}
+
+	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::R))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Pop Redo Stack"));
+		Redo();
+	}
+	/*if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::P))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Push Redo Stack"));
+		m_brickManager->InitializeBricks();
+	}*/
+
 }
 
 void AJengaController::AlignBricks()
@@ -35,6 +72,7 @@ void AJengaController::AlignBricks()
 void AJengaController::NewGame(int playerCount)
 {
 	m_playerCount = playerCount;
+	m_brickManager->InitializeBricks();
 	OnBeginTurn();
 }
 
@@ -42,6 +80,7 @@ void AJengaController::NewGame(int playerCount)
 void AJengaController::OnBeginTurn()
 {
 	m_phase = PhaseRemoval;
+	PushUndoStack();
 }
 void AJengaController::OnFinishTurn()
 {	
@@ -58,6 +97,20 @@ void AJengaController::OnBrickPlaced()
 	m_phase = PhaseWait;
 }
 
+void AJengaController::PushUndoStack()
+{
+	m_undoStack.push(m_brickManager->GetSnapshot());
+	
+	std::string str = "";
+
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Restting"));
+}
+
+void AJengaController::PushRedoStack(TowerSnapshot* snapshot)
+{
+	m_redoStack.push(snapshot);
+}
 
 void AJengaController::Undo()
 {
@@ -68,6 +121,7 @@ void AJengaController::Undo()
 	else
 	{
 		auto snapshot = m_undoStack.top();
+		PushRedoStack(snapshot);
 		m_brickManager->ApplySnapshot(snapshot);
 		m_undoStack.pop();
 	}

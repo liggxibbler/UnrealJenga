@@ -26,6 +26,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	void SpawnBricks();
 	void InitializeBricks();
+	void Explode();
 	void DestroyBricks();
 	AJengaBrick** GetBricks();
 	

@@ -56,9 +56,10 @@ public:
 	void OnFinishTurn();
 	
 	void OnBrickRemoved();
-	void OnBrickPlaced();
-	
+	void OnBrickPlaced();	
 
+	void PushUndoStack();
+	void PushRedoStack(TowerSnapshot* snapshot);
 	void Undo();
 	void Redo();
 

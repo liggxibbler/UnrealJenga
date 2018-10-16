@@ -55,6 +55,14 @@ void AJengaBrickManager::InitializeBricks()
 	}
 }
 
+void AJengaBrickManager::Explode()
+{
+	for (int i = 0; i < BRICK_COUNT - 1; ++i)
+	{
+		m_jengaBricks[i]->m_mesh->SetPhysicsLinearVelocity(m_jengaBricks[i + 1]->GetActorLocation());
+	}
+}
+
 void AJengaBrickManager::DestroyBricks()
 {
 	for (int i = 0; i < BRICK_COUNT; ++i)

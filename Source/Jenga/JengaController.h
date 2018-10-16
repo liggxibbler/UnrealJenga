@@ -59,7 +59,7 @@ public:
 	void OnBrickPlaced();	
 
 	void PushUndoStack();
-	void PushRedoStack(TowerSnapshot* snapshot);
+	void PushRedoStack();
 	void Undo();
 	void Redo();
 

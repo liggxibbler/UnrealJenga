@@ -1,7 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include <string>
+
 #include "JengaBrickManager.h"
 #include "Engine/World.h"
+#include "EngineGlobals.h"
 #include "Components/StaticMeshComponent.h"
 
 // Sets default values
@@ -44,6 +47,7 @@ void AJengaBrickManager::SpawnBricks()
 
 void AJengaBrickManager::InitializeBricks()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Restting"));
 	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
 		// Set brick poisition and orientation
@@ -57,6 +61,7 @@ void AJengaBrickManager::InitializeBricks()
 
 void AJengaBrickManager::Explode()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Exploding"));
 	for (int i = 0; i < BRICK_COUNT - 1; ++i)
 	{
 		m_jengaBricks[i]->m_mesh->SetPhysicsLinearVelocity(m_jengaBricks[i + 1]->GetActorLocation());
@@ -78,22 +83,22 @@ AJengaBrick** AJengaBrickManager::GetBricks()
 
 FVector* AJengaBrickManager::GetLocationSnapshot()
 {
-	FVector* ret = new FVector[BRICK_COUNT];
 	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
-		ret[i] = m_jengaBricks[i]->GetActorLocation();
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, m_jengaBricks[i]->GetActorLocation().ToString());
+		m_locations[i] = m_jengaBricks[i]->GetActorLocation();
 	}
-	return ret;
+	return m_locations;
 }
 
 FRotator* AJengaBrickManager::GetRotationSnapshot()
 {
-	FRotator* ret = new FRotator[BRICK_COUNT];
 	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
-		ret[i] = m_jengaBricks[i]->GetActorRotation();
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, m_jengaBricks[i]->GetActorRotation().ToString());
+		m_rotations[i] = m_jengaBricks[i]->GetActorRotation();
 	}
-	return ret;
+	return m_rotations;
 }
 
 FVector AJengaBrickManager::GetInitialiPosition(int i)
@@ -125,8 +130,9 @@ void AJengaBrickManager::ApplySnapshot(TowerSnapshot* snapshot)
 {
 	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
-		m_jengaBricks[i]->SetActorLocation(snapshot[i].GetSnapshot()->location);
-		m_jengaBricks[i]->SetActorRotation(snapshot[i].GetSnapshot()->rotation);
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, (snapshot->GetSnapshot(i).location).ToString() + FString("	,	") + (snapshot->GetSnapshot(i).rotation).ToString());
+		m_jengaBricks[i]->SetActorLocation(snapshot->GetSnapshot(i).location);
+		m_jengaBricks[i]->SetActorRotation(snapshot->GetSnapshot(i).rotation);
 		m_jengaBricks[i]->m_mesh->SetPhysicsLinearVelocity(FVector(0, 0, 0));
 		m_jengaBricks[i]->m_mesh->SetPhysicsAngularVelocity(FVector(0, 0, 0));
 	}

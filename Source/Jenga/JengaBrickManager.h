@@ -54,4 +54,7 @@ private:
 
 	FVector* GetLocationSnapshot();
 	FRotator* GetRotationSnapshot();
+
+	FVector m_locations[BRICK_COUNT];
+	FRotator m_rotations[BRICK_COUNT];
 };

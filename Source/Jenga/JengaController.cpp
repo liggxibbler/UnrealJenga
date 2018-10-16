@@ -30,30 +30,25 @@ void AJengaController::Tick(float DeltaTime)
 
 	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::SpaceBar))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Restting"));
 		m_brickManager->InitializeBricks();
 	}
 
 	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::Enter))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Exploding"));
 		m_brickManager->Explode();
 	}
 
 	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::U))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Pop Undo Stack"));
 		Undo();
 	}
 	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::V))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Push Undo Stack"));
 		PushUndoStack();
 	}
 
 	if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::R))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Pop Redo Stack"));
 		Redo();
 	}
 	/*if (GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::P))
@@ -99,42 +94,42 @@ void AJengaController::OnBrickPlaced()
 
 void AJengaController::PushUndoStack()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Push Undo Stack"));
 	m_undoStack.push(m_brickManager->GetSnapshot());
-	
-	std::string str = "";
-
-
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Restting"));
 }
 
-void AJengaController::PushRedoStack(TowerSnapshot* snapshot)
+void AJengaController::PushRedoStack()
 {
-	m_redoStack.push(snapshot);
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Push Redo Stack"));
+	m_redoStack.push(m_brickManager->GetSnapshot());
 }
 
 void AJengaController::Undo()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Pop Undo Stack"));
 	if (m_undoStack.empty())
 	{
 		// Nag about it
 	}
 	else
 	{
+		PushRedoStack();
 		auto snapshot = m_undoStack.top();
-		PushRedoStack(snapshot);
-		m_brickManager->ApplySnapshot(snapshot);
+		m_brickManager->ApplySnapshot(snapshot);		
 		m_undoStack.pop();
 	}
 }
 
 void AJengaController::Redo()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Pop Redo Stack"));
 	if (m_redoStack.empty())
 	{
 		// Nag about it
 	}
 	else
 	{
+		PushUndoStack();
 		auto snapshot = m_redoStack.top();
 		m_brickManager->ApplySnapshot(snapshot);
 		m_redoStack.pop();

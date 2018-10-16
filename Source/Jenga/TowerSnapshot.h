@@ -3,7 +3,7 @@
 #pragma once
 
 #define LEVEL_COUNT 18
-#define BRICK_COUNT 3 * LEVEL_COUNT
+#define BRICK_COUNT 54
 
 #include "CoreMinimal.h"
 
@@ -24,7 +24,7 @@ public:
 		FRotator rotation;
 	};
 
-	BrickState* GetSnapshot();
+	BrickState GetSnapshot(int idx);
 
 private:
 	BrickState m_snapshot[BRICK_COUNT];

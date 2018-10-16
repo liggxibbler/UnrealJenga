@@ -3,7 +3,6 @@
 #include "JengaController.h"
 #include "Engine/World.h"
 #include "EngineGlobals.h"
-#include "GameFramework/PlayerController.h"
 
 
 // Sets default values
@@ -21,25 +20,26 @@ void AJengaController::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	pc = GetWorld()->GetFirstPlayerController();
 }
 
 // Called every frame
 void AJengaController::Tick(float DeltaTime)
 {
-	auto pc = GetWorld()->GetFirstPlayerController();
-
 	switch (m_phase)
 	{
 	case Phase::PhaseInit:
-		//	TODO I don't think there's more to be done here!
+		//	TODO This will later become a UI event
 		if (pc->WasInputKeyJustPressed(EKeys::S))
 		{
-			m_phase = Phase::PhaseRemovalSelect;
+			NewGame(m_playerCount);
 		}
 		break;
 	case Phase::PhaseRemovalSelect:
-		//	
-		SelectBrick();
+		if (SelectBrick())
+		{
+			m_phase = Phase::PhaseRemovalSlide;
+		}
 		break;
 	case Phase::PhaseRemovalSlide:
 		break;	
@@ -132,6 +132,16 @@ bool AJengaController::SelectBrick()
 		if (nullptr != hit.Actor)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, hit.Actor->GetName());
+			if (nullptr != dynamic_cast<AJengaBrick*>(hit.Actor.Get()) && pc->WasInputKeyJustReleased(EKeys::LeftMouseButton))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick selected!"));
+				m_selectedBrick = (AJengaBrick*)hit.GetActor();
+				return true;
+			}
+		}
+		else
+		{ 
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, TEXT("NO HIT"));
 		}
 	}
 	return false;

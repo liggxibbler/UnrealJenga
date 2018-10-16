@@ -6,6 +6,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/PlayerController.h"
+
 #include "JengaBrickManager.h"
 
 #include "JengaController.generated.h"
@@ -40,6 +42,7 @@ private:
 	int m_currentPlayer = 0;
 
 	AJengaBrick* m_selectedBrick = nullptr;
+	APlayerController* pc = nullptr;
 
 public:	
 	// Sets default values for this actor's properties

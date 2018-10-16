@@ -26,23 +26,12 @@ void AJengaBrickManager::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	UWorld* world = GetWorld();
-
-	if (m_spawnCount < 18)
-	{
-		//m_jengaBricks[m_spawnCount] = world->SpawnActor<AJengaBrick>(m_brickTemplate, GetInitialiPosition(m_spawnCount), GetInitialRotation(m_spawnCount));
-		//m_jengaBricks[m_spawnCount]->SetActorScale3D(FVector(m_thickness * 5, m_thickness * 15, m_thickness * 3) / 100);
-		for (int i = 0; i < 3; ++i)
-		{
-			//m_jengaBricks[(17 - m_spawnCount) * 3 + i]->m_mesh->SetSimulatePhysics(true);
-		}
-		m_spawnCount++;
-	}
 }
 
 void AJengaBrickManager::SpawnBricks()
 {
 	UWorld* world = GetWorld();
-	for (int i = 0; i < 3 * 18; ++i)
+	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
 		m_jengaBricks[i] = world->SpawnActor<AJengaBrick>(m_brickTemplate, GetInitialiPosition(i), GetInitialRotation(i));
 		m_jengaBricks[i]->SetActorScale3D(FVector(m_thickness * 5, m_thickness * 15, m_thickness * 3) / 100);
@@ -55,18 +44,20 @@ void AJengaBrickManager::SpawnBricks()
 
 void AJengaBrickManager::InitializeBricks()
 {
-	for (int i = 0; i < 3 * 18; ++i)
+	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
 		// Set brick poisition and orientation
 		m_jengaBricks[i]->SetActorLocation(GetInitialiPosition(i));
 		m_jengaBricks[i]->SetActorRotation(GetInitialRotation(i));
+		m_jengaBricks[i]->m_mesh->SetPhysicsLinearVelocity(FVector(0, 0, 0));
+		m_jengaBricks[i]->m_mesh->SetPhysicsAngularVelocity(FVector(0, 0, 0));
 		// Activate physics simulation
 	}
 }
 
 void AJengaBrickManager::DestroyBricks()
 {
-	for (int i = 0; i < 3 * 18; ++i)
+	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
 		m_jengaBricks[i]->Destroy();
 	}
@@ -77,9 +68,24 @@ AJengaBrick** AJengaBrickManager::GetBricks()
 	return m_jengaBricks;
 }
 
-FVector* AJengaBrickManager::GetSnapshot()
+FVector* AJengaBrickManager::GetLocationSnapshot()
 {
-	return nullptr;
+	FVector* ret = new FVector[BRICK_COUNT];
+	for (int i = 0; i < BRICK_COUNT; ++i)
+	{
+		ret[i] = m_jengaBricks[i]->GetActorLocation();
+	}
+	return ret;
+}
+
+FRotator* AJengaBrickManager::GetRotationSnapshot()
+{
+	FRotator* ret = new FRotator[BRICK_COUNT];
+	for (int i = 0; i < BRICK_COUNT; ++i)
+	{
+		ret[i] = m_jengaBricks[i]->GetActorRotation();
+	}
+	return ret;
 }
 
 FVector AJengaBrickManager::GetInitialiPosition(int i)
@@ -100,4 +106,9 @@ FRotator AJengaBrickManager::GetInitialRotation(int i)
 {
 	int level = i / 3;
 	return FRotator(0, (level % 2 == 0) ? 0 : 90, 0);
+}
+
+int AJengaBrickManager::GetLevel(float height)
+{
+	return (height - m_thickness * 3 * .5) / (m_thickness * 3);
 }

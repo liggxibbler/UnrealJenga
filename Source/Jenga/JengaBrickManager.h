@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "JengaBrick.h"
+#include "TowerSnapshot.h"
 #include "JengaBrickManager.generated.h"
 
 UCLASS()
@@ -27,12 +28,17 @@ public:
 	void InitializeBricks();
 	void DestroyBricks();
 	AJengaBrick** GetBricks();
-	FVector* GetSnapshot();
+	
+	FVector* GetLocationSnapshot();
+	FRotator* GetRotationSnapshot();
+	
 	FVector GetInitialiPosition(int i);
 	FRotator GetInitialRotation(int i);
 
+	//void ApplySnapshot(TowerSnapshot* snapshot);
+
 private:
-	AJengaBrick* m_jengaBricks[54];
+	AJengaBrick* m_jengaBricks[BRICK_COUNT];
 	int GetLevel(float height);	
 
 	UPROPERTY(EditAnywhere)

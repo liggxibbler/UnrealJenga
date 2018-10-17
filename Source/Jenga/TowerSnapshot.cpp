@@ -11,7 +11,7 @@ TowerSnapshot::TowerSnapshot(FVector locations[], FRotator rotations[])
 {
 	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, locations[i].ToString() + FString("	,	") + rotations[i].ToString());
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, locations[i].ToString() + FString("	,	") + rotations[i].ToString());
 		m_snapshot[i].location = locations[i];
 		m_snapshot[i].rotation = rotations[i];
 	}

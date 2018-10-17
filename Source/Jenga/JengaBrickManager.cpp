@@ -87,7 +87,7 @@ FVector* AJengaBrickManager::GetLocationSnapshot()
 {
 	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, m_jengaBricks[i]->GetActorLocation().ToString());
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, m_jengaBricks[i]->GetActorLocation().ToString());
 		m_locations[i] = m_jengaBricks[i]->GetActorLocation();
 	}
 	return m_locations;
@@ -97,7 +97,7 @@ FRotator* AJengaBrickManager::GetRotationSnapshot()
 {
 	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, m_jengaBricks[i]->GetActorRotation().ToString());
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, m_jengaBricks[i]->GetActorRotation().ToString());
 		m_rotations[i] = m_jengaBricks[i]->GetActorRotation();
 	}
 	return m_rotations;
@@ -132,7 +132,7 @@ void AJengaBrickManager::ApplySnapshot(TowerSnapshot* snapshot)
 {
 	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, (snapshot->GetSnapshot(i).location).ToString() + FString("	,	") + (snapshot->GetSnapshot(i).rotation).ToString());
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, (snapshot->GetSnapshot(i).location).ToString() + FString("	,	") + (snapshot->GetSnapshot(i).rotation).ToString());
 		m_jengaBricks[i]->SetActorLocation(snapshot->GetSnapshot(i).location);
 		m_jengaBricks[i]->SetActorRotation(snapshot->GetSnapshot(i).rotation);
 		m_jengaBricks[i]->m_mesh->SetPhysicsLinearVelocity(FVector(0, 0, 0));

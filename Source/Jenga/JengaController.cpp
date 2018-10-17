@@ -59,33 +59,27 @@ void AJengaController::Tick(float DeltaTime)
 
 	Super::Tick(DeltaTime);
 
-	if (pc->WasInputKeyJustPressed(EKeys::SpaceBar))
-	{
-		m_brickManager->InitializeBricks();
-	}
-
 	if (pc->WasInputKeyJustPressed(EKeys::Enter))
 	{
+		PushUndoStack();
 		m_brickManager->Explode();
 	}
 
-	if (pc->WasInputKeyJustPressed(EKeys::U))
-	{
-		Undo();
-	}
 	if (pc->WasInputKeyJustPressed(EKeys::V))
 	{
 		PushUndoStack();
 	}
 
-	if (pc->WasInputKeyJustPressed(EKeys::R))
+	if (pc->WasInputKeyJustPressed(EKeys::L))
 	{
-		Redo();
-	}
-	
-	if (pc->WasInputKeyJustPressed(EKeys::N))
-	{
-		NewGame(m_playerCount);
+		if (CheckLoseStatus())
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Tower has fallen"));
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Tower still standing"));
+		}
 	}
 
 }
@@ -117,7 +111,7 @@ void AJengaController::NewGame(int playerCount)
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, TEXT("Starting new game"));
 	ClearStacks();
 	m_playerCount = playerCount;
-	m_brickManager->InitializeBricks();
+	m_brickManager->SpawnBricks();
 	OnBeginTurn();
 }
 
@@ -137,7 +131,7 @@ bool AJengaController::SelectBrick()
 	{
 		if (nullptr != hit.Actor)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, hit.Actor->GetName());
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, hit.Actor->GetName());
 			
 			if (nullptr != dynamic_cast<AJengaBrick*>(hit.Actor.Get()))
 			{
@@ -234,4 +228,16 @@ void AJengaController::Redo()
 		m_brickManager->ApplySnapshot(snapshot);
 		m_redoStack.pop();
 	}
+}
+
+bool AJengaController::CheckLoseStatus()
+{
+	return m_brickManager->HasTowerFallen(LastStableSnapshot());
+}
+
+// PRIVATE
+
+TowerSnapshot* AJengaController::LastStableSnapshot()
+{
+	return m_undoStack.top();
 }

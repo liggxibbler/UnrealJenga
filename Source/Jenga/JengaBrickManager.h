@@ -43,8 +43,7 @@ public:
 	void ResetSelections();
 	
 private:
-	AJengaBrick* m_jengaBricks[BRICK_COUNT];
-	int GetLevel(float height);	
+	AJengaBrick* m_jengaBricks[BRICK_COUNT];		
 
 	UPROPERTY(EditAnywhere)
 	float m_thickness;
@@ -74,5 +73,13 @@ private:
 	AJengaBrick* m_selectedBrick = nullptr;
 	AJengaBrick* m_hoveredBrick = nullptr;
 
+	bool m_areBricksSpawned = false;
+
 	void SetMaterial(AJengaBrick* brick, bool selected);
+
+	int GetLevel(float height);
+	float GetMaxHeight();
+	int GetMaxLevel();
+	float GetMaxHeight(TowerSnapshot* snapshot);
+	int GetMaxLevel(TowerSnapshot* snapshot);
 };

@@ -31,7 +31,7 @@ public:
 private:
 	std::stack<TowerSnapshot*> m_undoStack;
 	std::stack<TowerSnapshot*> m_redoStack;
-
+	
 	UPROPERTY(EditAnywhere)
 	AJengaBrickManager* m_brickManager;
 
@@ -43,6 +43,8 @@ private:
 	int m_currentPlayer = 0;
 
 	APlayerController* pc = nullptr;
+
+	TowerSnapshot* LastStableSnapshot();
 
 public:	
 	// Sets default values for this actor's properties
@@ -62,7 +64,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GameController")
 		void NewGame(int playerCount);
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameControllerEvents")
-	void OnGameOver();
+		void OnGameOver();
 	void GameOver();
 
 	bool SelectBrick();
@@ -82,5 +84,5 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GameController")
 		void Redo();
 
-
+	bool CheckLoseStatus();
 };

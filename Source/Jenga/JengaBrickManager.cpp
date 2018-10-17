@@ -21,7 +21,6 @@ void AJengaBrickManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SpawnBricks();
 }
 
 // Called every frame
@@ -34,6 +33,14 @@ void AJengaBrickManager::Tick(float DeltaTime)
 
 void AJengaBrickManager::SpawnBricks()
 {
+	if (m_areBricksSpawned)
+	{
+		InitializeBricks();
+		return;
+	}
+
+	m_areBricksSpawned = true;
+
 	UWorld* world = GetWorld();
 	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
@@ -141,6 +148,22 @@ void AJengaBrickManager::ApplySnapshot(TowerSnapshot* snapshot)
 
 bool AJengaBrickManager::HasTowerFallen(TowerSnapshot* snapshot)
 {
+	float maxHeight = GetMaxHeight(snapshot);
+	float maxLevel = GetMaxLevel(snapshot);
+	float diffSqr = m_thickness * 3 * m_thickness * 3;
+
+	for (int i = 0; i < BRICK_COUNT; ++i)
+	{
+		if (GetLevel(m_jengaBricks[i]->GetActorLocation().Z) != maxLevel)
+		{
+			float distSqr = FVector::DistSquared(snapshot->GetSnapshot(i).location, m_jengaBricks[i]->GetActorLocation());
+			if (distSqr > diffSqr)
+			{
+				return true;
+			}
+		}
+	}
+
 	return false;
 }
 
@@ -185,4 +208,42 @@ void AJengaBrickManager::SetMaterial(AJengaBrick* brick, bool selected)
 int AJengaBrickManager::GetLevel(float height)
 {
 	return (height - m_thickness * 3 * .5) / (m_thickness * 3);
+}
+
+float AJengaBrickManager::GetMaxHeight()
+{
+	float max = 0;
+	for (int i = 0; i < BRICK_COUNT; ++i)
+	{
+		if (m_jengaBricks[i]->GetActorLocation().Z > max)
+		{
+			max = m_jengaBricks[i]->GetActorLocation().Z;
+		}
+	}
+
+	return max;
+}
+
+int AJengaBrickManager::GetMaxLevel()
+{
+	return GetLevel(GetMaxHeight());
+}
+
+float AJengaBrickManager::GetMaxHeight(TowerSnapshot* snapshot)
+{
+	float max = 0;
+	for (int i = 0; i < BRICK_COUNT; ++i)
+	{
+		if (snapshot->GetSnapshot(i).location.Z > max)
+		{
+			max = snapshot->GetSnapshot(i).location.Z;
+		}
+	}
+
+	return max;
+}
+
+int AJengaBrickManager::GetMaxLevel(TowerSnapshot* snapshot)
+{
+	return GetLevel(GetMaxHeight(snapshot));
 }

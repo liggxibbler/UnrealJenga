@@ -42,7 +42,6 @@ private:
 	int m_turn = 0;
 	int m_currentPlayer = 0;
 
-	AJengaBrick* m_selectedBrick = nullptr;
 	APlayerController* pc = nullptr;
 
 public:	

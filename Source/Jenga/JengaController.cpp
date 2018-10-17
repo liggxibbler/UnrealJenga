@@ -45,7 +45,7 @@ void AJengaController::Tick(float DeltaTime)
 	case Phase::PhaseRemovalSlide:
 		if (pc->WasInputKeyJustPressed(EKeys::BackSpace))
 		{
-			m_brickManager->SetMaterial(m_selectedBrick, false);
+			m_brickManager->ResetSelections();
 			m_phase = Phase::PhaseRemovalSelect;
 		}
 		break;	
@@ -138,12 +138,17 @@ bool AJengaController::SelectBrick()
 		if (nullptr != hit.Actor)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, hit.Actor->GetName());
-			if (nullptr != dynamic_cast<AJengaBrick*>(hit.Actor.Get()) && pc->WasInputKeyJustReleased(EKeys::LeftMouseButton))
+			
+			if (nullptr != dynamic_cast<AJengaBrick*>(hit.Actor.Get()))
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick selected!"));
-				m_selectedBrick = (AJengaBrick*)hit.GetActor();
-				m_brickManager->SetMaterial(m_selectedBrick, true);
-				return true;
+				m_brickManager->HoverBrick((AJengaBrick*)hit.GetActor());
+
+				if (pc->WasInputKeyJustReleased(EKeys::LeftMouseButton))
+				{				
+					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick selected!"));
+					m_brickManager->SelectBrick((AJengaBrick*)hit.GetActor());
+					return true;
+				}
 			}
 		}
 		else
@@ -157,11 +162,7 @@ bool AJengaController::SelectBrick()
 
 void AJengaController::OnBeginTurn()
 {
-	if (nullptr != m_selectedBrick)
-	{
-		m_brickManager->SetMaterial(m_selectedBrick, false);
-		m_selectedBrick = nullptr;
-	}
+	m_brickManager->ResetSelections();
 
 	m_phase = PhaseRemovalSelect;
 	PushUndoStack();

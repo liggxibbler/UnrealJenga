@@ -144,6 +144,39 @@ bool AJengaBrickManager::HasTowerFallen(TowerSnapshot* snapshot)
 	return false;
 }
 
+
+void AJengaBrickManager::SelectBrick(AJengaBrick* brick)
+{
+	m_selectedBrick = brick;
+	m_selectedBrick->SetMaterial(m_selectedMaterial);
+}
+void AJengaBrickManager::HoverBrick(AJengaBrick* brick)
+{
+	if (brick != m_hoveredBrick)
+	{
+		if (nullptr != m_hoveredBrick)
+		{
+			m_hoveredBrick->SetMaterial(m_normalMaterial);			
+		}
+
+		m_hoveredBrick = brick;
+
+		if (nullptr != m_hoveredBrick)
+		{
+			m_hoveredBrick->SetMaterial(m_hoverMaterial);
+		}
+	}	
+}
+
+void AJengaBrickManager::ResetSelections()
+{
+	if (nullptr != m_selectedBrick)
+	{
+		SetMaterial(m_selectedBrick, false);
+		m_selectedBrick = nullptr;
+	}
+}
+
 void AJengaBrickManager::SetMaterial(AJengaBrick* brick, bool selected)
 {
 	brick->m_mesh->SetMaterial(0, selected ? m_selectedMaterial : m_normalMaterial);

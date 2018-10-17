@@ -123,7 +123,7 @@ void AJengaController::NewGame(int playerCount)
 
 void AJengaController::GameOver()
 {
-
+	OnGameOver();
 }
 
 bool AJengaController::SelectBrick()
@@ -132,7 +132,7 @@ bool AJengaController::SelectBrick()
 	//pc->WasInputKeyJustReleased(EKeys::LeftMouseButton)
 
 	FHitResult hit;
-	auto controller = GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, hit);
+	auto controller = pc->GetHitResultUnderCursor(ECC_WorldDynamic, false, hit);	
 	if (hit.bBlockingHit)
 	{
 		if (nullptr != hit.Actor)
@@ -162,6 +162,8 @@ bool AJengaController::SelectBrick()
 
 void AJengaController::OnBeginTurn()
 {
+	OnBeginTurnEvent();
+
 	m_brickManager->ResetSelections();
 
 	m_phase = PhaseRemovalSelect;

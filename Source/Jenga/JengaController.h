@@ -58,11 +58,17 @@ public:
 
 	void ClearStacks();
 	void AlignBricks(); // Don't forget to set angular and linear velocities to zero
-	void NewGame(int playerCount);
+	
+	UFUNCTION(BlueprintCallable, Category = "GameController")
+		void NewGame(int playerCount);
+	UFUNCTION(BlueprintImplementableEvent, Category = "GameControllerEvents")
+	void OnGameOver();
 	void GameOver();
 
 	bool SelectBrick();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "GameControllerEvents")
+		void OnBeginTurnEvent();
 	void OnBeginTurn();
 	void OnFinishTurn();
 	
@@ -71,8 +77,10 @@ public:
 
 	void PushUndoStack();
 	void PushRedoStack();
-	void Undo();
-	void Redo();
+	UFUNCTION(BlueprintCallable, Category = "GameController")
+		void Undo();
+	UFUNCTION(BlueprintCallable, Category = "GameController")
+		void Redo();
 
 
 };

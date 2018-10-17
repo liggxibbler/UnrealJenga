@@ -33,8 +33,9 @@ public:
 	FVector GetInitialiPosition(int i);
 	FRotator GetInitialRotation(int i);
 
-	TowerSnapshot* GetSnapshot();
+	TowerSnapshot* GetSnapshot();	
 	void ApplySnapshot(TowerSnapshot* snapshot);
+	TowerSnapshot* GetInitialSnapshot();
 
 	bool HasTowerFallen(TowerSnapshot* snapshot);
 
@@ -74,6 +75,8 @@ private:
 	AJengaBrick* m_hoveredBrick = nullptr;
 
 	bool m_areBricksSpawned = false;
+
+	TowerSnapshot* m_initialSnapshot;
 
 	void SetMaterial(AJengaBrick* brick, bool selected);
 

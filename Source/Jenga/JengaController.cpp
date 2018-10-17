@@ -27,6 +27,8 @@ void AJengaController::BeginPlay()
 // Called every frame
 void AJengaController::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
+
 	switch (m_phase)
 	{
 	case Phase::PhaseInit:
@@ -45,6 +47,7 @@ void AJengaController::Tick(float DeltaTime)
 	case Phase::PhaseRemovalSlide:
 		if (pc->WasInputKeyJustPressed(EKeys::BackSpace))
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Cancelling selection!"));
 			m_brickManager->ResetSelections();
 			m_phase = Phase::PhaseRemovalSelect;
 		}
@@ -52,16 +55,37 @@ void AJengaController::Tick(float DeltaTime)
 	case Phase::PhasePlacement:
 		break;
 	case Phase::PhaseWait:
+		// Count down from 10 seconds
+		m_turnEndTimer -= DeltaTime;
+		if (m_turnEndTimer <= 0)
+		{
+			OnFinishTurn();
+		}
+		break;
+	case Phase::PhaseGameOver:
 		break;
 	default:
 		break;
 	}
 
-	Super::Tick(DeltaTime);
+	if (pc->WasInputKeyJustPressed(EKeys::Right))
+	{
+		switch (m_phase)
+		{		
+		case Phase::PhaseRemovalSlide:
+			OnBrickRemoved();
+			break;
+		case Phase::PhasePlacement:
+			OnBrickPlaced();
+			break;
+		case Phase::PhaseWait:
+			OnFinishTurn();
+			break;
+		}
+	}
 
 	if (pc->WasInputKeyJustPressed(EKeys::Enter))
 	{
-		PushUndoStack();
 		m_brickManager->Explode();
 	}
 
@@ -74,7 +98,8 @@ void AJengaController::Tick(float DeltaTime)
 	{
 		if (CheckLoseStatus())
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Tower has fallen"));
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Tower has fallen!"));
+			GameOver();
 		}
 		else
 		{
@@ -117,6 +142,8 @@ void AJengaController::NewGame(int playerCount)
 
 void AJengaController::GameOver()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Game Over"));
+	m_phase = Phase::PhaseGameOver;
 	OnGameOver();
 }
 
@@ -156,28 +183,41 @@ bool AJengaController::SelectBrick()
 
 void AJengaController::OnBeginTurn()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Beginning next turn!"));
+
 	OnBeginTurnEvent();
 
 	m_brickManager->ResetSelections();
 
-	m_phase = PhaseRemovalSelect;
-	PushUndoStack();
+	m_phase = PhaseRemovalSelect;	
 }
 void AJengaController::OnFinishTurn()
 {	
-	++m_turn;
-	m_currentPlayer = m_turn % m_playerCount;
-	OnBeginTurn();
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Turn finished!"));
+
+	if (CheckLoseStatus())
+	{
+		GameOver();
+	}
+	else
+	{
+		PushUndoStack();
+		++m_turn;
+		m_currentPlayer = m_turn % m_playerCount;
+		OnBeginTurn();
+	}
 }
 
 void AJengaController::OnBrickRemoved()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick removed!"));
 	m_phase = PhasePlacement;
 }
 void AJengaController::OnBrickPlaced()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick placed!"));
 	m_phase = PhaseWait;
-	// TODO
+	m_turnEndTimer = m_turnWaitDuration;	
 }
 
 void AJengaController::PushUndoStack()
@@ -239,5 +279,13 @@ bool AJengaController::CheckLoseStatus()
 
 TowerSnapshot* AJengaController::LastStableSnapshot()
 {
-	return m_undoStack.top();
+	if (!m_undoStack.empty())
+	{
+		return m_undoStack.top();
+	}
+	else
+	{
+		return m_brickManager->GetInitialSnapshot();
+	}
+	
 }

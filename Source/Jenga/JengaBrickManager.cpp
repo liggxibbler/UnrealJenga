@@ -50,21 +50,15 @@ void AJengaBrickManager::SpawnBricks()
 		m_jengaBricks[i]->GetComponents<UStaticMeshComponent>(meshArray);
 		m_jengaBricks[i]->m_mesh = meshArray[0];
 		//m_jengaBricks[i]->m_mesh->SetSimulatePhysics(false);		
-	}	
+	}
+
+	m_initialSnapshot = GetSnapshot();
 }
 
 void AJengaBrickManager::InitializeBricks()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Restting"));
-	for (int i = 0; i < BRICK_COUNT; ++i)
-	{
-		// Set brick poisition and orientation
-		m_jengaBricks[i]->SetActorLocation(GetInitialiPosition(i));
-		m_jengaBricks[i]->SetActorRotation(GetInitialRotation(i));
-		m_jengaBricks[i]->m_mesh->SetPhysicsLinearVelocity(FVector(0, 0, 0));
-		m_jengaBricks[i]->m_mesh->SetPhysicsAngularVelocityInDegrees(FVector(0, 0, 0));
-		// Activate physics simulation
-	}
+	ApplySnapshot(m_initialSnapshot);
 }
 
 void AJengaBrickManager::Explode()
@@ -144,6 +138,11 @@ void AJengaBrickManager::ApplySnapshot(TowerSnapshot* snapshot)
 		m_jengaBricks[i]->m_mesh->SetPhysicsLinearVelocity(FVector(0, 0, 0));
 		m_jengaBricks[i]->m_mesh->SetPhysicsAngularVelocityInDegrees(FVector(0, 0, 0));
 	}
+}
+
+TowerSnapshot* AJengaBrickManager::GetInitialSnapshot()
+{
+	return m_initialSnapshot;
 }
 
 bool AJengaBrickManager::HasTowerFallen(TowerSnapshot* snapshot)

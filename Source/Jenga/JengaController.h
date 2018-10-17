@@ -44,6 +44,9 @@ private:
 
 	APlayerController* pc = nullptr;
 
+	const float m_turnWaitDuration = 10.0;
+	float m_turnEndTimer;
+
 	TowerSnapshot* LastStableSnapshot();
 
 public:	

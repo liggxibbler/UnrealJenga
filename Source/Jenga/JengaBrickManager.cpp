@@ -55,7 +55,7 @@ void AJengaBrickManager::InitializeBricks()
 		m_jengaBricks[i]->SetActorLocation(GetInitialiPosition(i));
 		m_jengaBricks[i]->SetActorRotation(GetInitialRotation(i));
 		m_jengaBricks[i]->m_mesh->SetPhysicsLinearVelocity(FVector(0, 0, 0));
-		m_jengaBricks[i]->m_mesh->SetPhysicsAngularVelocity(FVector(0, 0, 0));
+		m_jengaBricks[i]->m_mesh->SetPhysicsAngularVelocityInDegrees(FVector(0, 0, 0));
 		// Activate physics simulation
 	}
 }
@@ -135,7 +135,7 @@ void AJengaBrickManager::ApplySnapshot(TowerSnapshot* snapshot)
 		m_jengaBricks[i]->SetActorLocation(snapshot->GetSnapshot(i).location);
 		m_jengaBricks[i]->SetActorRotation(snapshot->GetSnapshot(i).rotation);
 		m_jengaBricks[i]->m_mesh->SetPhysicsLinearVelocity(FVector(0, 0, 0));
-		m_jengaBricks[i]->m_mesh->SetPhysicsAngularVelocity(FVector(0, 0, 0));
+		m_jengaBricks[i]->m_mesh->SetPhysicsAngularVelocityInDegrees(FVector(0, 0, 0));
 	}
 }
 

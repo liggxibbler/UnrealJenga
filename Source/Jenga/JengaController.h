@@ -42,7 +42,7 @@ private:
 	int m_turn = 0;
 	int m_currentPlayer = 0;
 
-	APlayerController* pc = nullptr;
+	APlayerController* m_pc = nullptr;
 
 	const float m_turnWaitDuration = 10.0;
 	float m_turnEndTimer;

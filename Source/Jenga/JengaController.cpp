@@ -20,8 +20,8 @@ void AJengaController::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	pc = GetWorld()->GetFirstPlayerController();
-	pc->bShowMouseCursor = true;
+	m_pc = GetWorld()->GetFirstPlayerController();
+	m_pc->bShowMouseCursor = true;
 }
 
 // Called every frame
@@ -33,7 +33,7 @@ void AJengaController::Tick(float DeltaTime)
 	{
 	case Phase::PhaseInit:
 		//	TODO This will later become a UI event
-		if (pc->WasInputKeyJustPressed(EKeys::S))
+		if (m_pc->WasInputKeyJustPressed(EKeys::S))
 		{
 			NewGame(m_playerCount);
 		}
@@ -45,7 +45,7 @@ void AJengaController::Tick(float DeltaTime)
 		}
 		break;
 	case Phase::PhaseRemovalSlide:
-		if (pc->WasInputKeyJustPressed(EKeys::BackSpace))
+		if (m_pc->WasInputKeyJustPressed(EKeys::BackSpace))
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Cancelling selection!"));
 			m_brickManager->ResetSelections();
@@ -68,7 +68,7 @@ void AJengaController::Tick(float DeltaTime)
 		break;
 	}
 
-	if (pc->WasInputKeyJustPressed(EKeys::Right))
+	if (m_pc->WasInputKeyJustPressed(EKeys::Right))
 	{
 		switch (m_phase)
 		{		
@@ -84,17 +84,17 @@ void AJengaController::Tick(float DeltaTime)
 		}
 	}
 
-	if (pc->WasInputKeyJustPressed(EKeys::Enter))
+	if (m_pc->WasInputKeyJustPressed(EKeys::Enter))
 	{
 		m_brickManager->Explode();
 	}
 
-	if (pc->WasInputKeyJustPressed(EKeys::V))
+	if (m_pc->WasInputKeyJustPressed(EKeys::V))
 	{
 		PushUndoStack();
 	}
 
-	if (pc->WasInputKeyJustPressed(EKeys::L))
+	if (m_pc->WasInputKeyJustPressed(EKeys::L))
 	{
 		if (CheckLoseStatus())
 		{
@@ -153,7 +153,7 @@ bool AJengaController::SelectBrick()
 	//pc->WasInputKeyJustReleased(EKeys::LeftMouseButton)
 
 	FHitResult hit;
-	auto controller = pc->GetHitResultUnderCursor(ECC_WorldDynamic, false, hit);	
+	auto controller = m_pc->GetHitResultUnderCursor(ECC_WorldDynamic, false, hit);	
 	if (hit.bBlockingHit)
 	{
 		if (nullptr != hit.Actor)
@@ -164,7 +164,7 @@ bool AJengaController::SelectBrick()
 			{
 				m_brickManager->HoverBrick((AJengaBrick*)hit.GetActor());
 
-				if (pc->WasInputKeyJustReleased(EKeys::LeftMouseButton))
+				if (m_pc->WasInputKeyJustReleased(EKeys::LeftMouseButton))
 				{				
 					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick selected!"));
 					m_brickManager->SelectBrick((AJengaBrick*)hit.GetActor());

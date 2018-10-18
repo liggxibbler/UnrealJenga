@@ -13,8 +13,8 @@ AMyPawn::AMyPawn()
 
 	CreateDefaultSubobject<UFloatingPawnMovement>("FloatingPawn");
 
-	m_cubeMesh = CreateDefaultSubobject<UStaticMeshComponent>("Visual");
 	m_camera = CreateDefaultSubobject<UCameraComponent>("Camera");
+	m_camera->SetupAttachment(RootComponent);	
 }
 
 // Called when the game starts or when spawned

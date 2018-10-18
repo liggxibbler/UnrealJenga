@@ -17,9 +17,6 @@ public:
 	AMyPawn();
 
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* m_cubeMesh;
-
-	UPROPERTY(EditAnywhere)
 	UCameraComponent* m_camera;
 
 protected:

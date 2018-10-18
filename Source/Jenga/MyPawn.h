@@ -19,6 +19,14 @@ public:
 	UPROPERTY(EditAnywhere)
 	UCameraComponent* m_camera;
 
+	UPROPERTY(EditAnywhere, Category = "Params")
+		float m_radius = 600.0;
+	UPROPERTY(EditAnywhere, Category = "Params")
+		float m_sensitivity = 1.0;
+
+	float m_theta = 30;
+	float m_phi = 270;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -30,7 +38,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void MoveForward(float value);
-	void MoveRight(float value);
+	void RotateUp(float value);
+	void RotateRight(float value);
 	
 };

@@ -31,12 +31,7 @@ void AJengaController::Tick(float DeltaTime)
 
 	switch (m_phase)
 	{
-	case Phase::PhaseInit:
-		//	TODO This will later become a UI event
-		if (m_pc->WasInputKeyJustPressed(EKeys::S))
-		{
-			NewGame(m_playerCount);
-		}
+	case Phase::PhaseInit:		
 		break;
 	case Phase::PhaseRemovalSelect:
 		if (SelectBrick())

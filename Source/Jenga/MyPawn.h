@@ -41,4 +41,5 @@ public:
 	void RotateUp(float value);
 	void RotateRight(float value);
 	
+	void UpdatePosAndRot();
 };

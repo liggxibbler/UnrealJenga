@@ -2,10 +2,10 @@
 
 #include "MyPawn.h"
 
-#define PI 3.141592
-
 #include "GameFramework/Pawn.h"
 #include "Components/InputComponent.h"
+
+#define RAD2DEG 180 / PI
 
 #include "EngineGlobals.h"
 
@@ -25,9 +25,7 @@ AMyPawn::AMyPawn()
 	m_theta = PI / 6;
 	m_phi = 3 * PI / 2;
 
-	SetActorLocation(FVector(FMath::Sin(m_theta) * FMath::Cos(m_phi), FMath::Sin(m_theta) * FMath::Sin(m_phi), FMath::Cos(m_theta)) * m_radius);
-	SetActorRotation(FLookAtMatrix(GetActorLocation(), FVector(0,0,0), FVector(0,0,1)).Rotator());
-	//m_camera->SetWorldRotation(FLookAtMatrix(GetActorLocation(), FVector(0, 0, 0), FVector(0, 0, 1)).Rotator());
+	UpdatePosAndRot();
 }
 
 // Called when the game starts or when spawned
@@ -59,8 +57,6 @@ void AMyPawn::RotateUp(float value)
 	//AddMovementInput(GetActorForwardVector(), value);
 	m_theta -= value * m_sensitivity;
 	
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FVector2D(m_theta, m_phi).ToString());
-	
 	if (m_theta > PI / 2)
 	{
 		m_theta = PI / 2;
@@ -70,9 +66,7 @@ void AMyPawn::RotateUp(float value)
 		m_theta = 0;
 	}
 
-	SetActorLocation(FVector(FMath::Sin(m_theta) * FMath::Cos(m_phi), FMath::Sin(m_theta) * FMath::Sin(m_phi), FMath::Cos(m_theta)) * m_radius);
-	SetActorRotation(FLookAtMatrix(GetActorLocation(), FVector(0, 0, 0), FVector(0, 0, 1)).Rotator());
-	//m_camera->SetWorldRotation(FLookAtMatrix(GetActorLocation(), FVector(0, 0, 0), FVector(0, 0, 1)).Rotator());
+	UpdatePosAndRot();
 }
 
 void AMyPawn::RotateRight(float value)
@@ -80,7 +74,7 @@ void AMyPawn::RotateRight(float value)
 	//AddMovementInput(GetActorRightVector(), value);
 	m_phi -= value * m_sensitivity;
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FVector2D(m_theta, m_phi).ToString());
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FVector2D(m_theta, m_phi).ToString());
 
 	if (m_phi > 2 * PI)
 	{
@@ -89,9 +83,23 @@ void AMyPawn::RotateRight(float value)
 	if (m_phi < 0)
 	{
 		m_phi += 2 * PI;
-	}
+	}	
+
+	UpdatePosAndRot();
+}
+
+void AMyPawn::UpdatePosAndRot()
+{
 	SetActorLocation(FVector(FMath::Sin(m_theta) * FMath::Cos(m_phi), FMath::Sin(m_theta) * FMath::Sin(m_phi), FMath::Cos(m_theta)) * m_radius);
-	SetActorRotation(FLookAtMatrix(GetActorLocation(), FVector(0, 0, 0), FVector(0, 0, 1)).Rotator());
-	//m_camera->SetWorldRotation(FLookAtMatrix(GetActorLocation(), FVector(0, 0, 0), FVector(0, 0, 1)).Rotator());
+	//SetActorRotation(FLookAtMatrix(GetActorLocation(), FVector(0, 0, 0), FVector(0, 0, 1)).Rotator());	
+	//m_camera->SetWorldRotation(FRotator(180 + m_theta * RAD2DEG, m_phi * RAD2DEG, 0));	
+	//auto matrix = FLookAtMatrix(-GetActorLocation(), FVector(0, 0, 0), FVector(0, 1, 0));
+	//m_camera->SetWorldRotation(matrix.Rotator());
+	auto loc = GetActorLocation();
+	auto q1 = FQuat(FVector(0, 0, 1), PI + m_phi);
+	auto q2 = FQuat(FVector(-loc.Y, loc.X, 0), -m_theta * 0);
+	auto q3 = q1 * q2;
+	m_camera->SetWorldRotation(q3);
+	
 }
 

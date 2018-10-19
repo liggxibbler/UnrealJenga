@@ -33,7 +33,7 @@ public:
 	FVector GetInitialiPosition(int i);
 	FRotator GetInitialRotation(int i);
 
-	TowerSnapshot* GetSnapshot();	
+	TowerSnapshot* GetSnapshot(int player, int turn, int phase);	
 	void ApplySnapshot(TowerSnapshot* snapshot);
 	TowerSnapshot* GetInitialSnapshot();
 

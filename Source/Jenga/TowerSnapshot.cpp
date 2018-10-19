@@ -7,7 +7,8 @@ TowerSnapshot::TowerSnapshot()
 {
 }
 
-TowerSnapshot::TowerSnapshot(FVector locations[], FRotator rotations[])
+TowerSnapshot::TowerSnapshot(FVector locations[], FRotator rotations[], int currentPlayer, int currentTurn, int currentPhase)
+	: m_player(currentPlayer), m_turn(currentTurn), m_phase(currentPhase)
 {
 	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
@@ -25,4 +26,19 @@ TowerSnapshot::~TowerSnapshot()
 TowerSnapshot::BrickState TowerSnapshot::GetSnapshot(int idx)
 {
 	return m_snapshot[idx];
+}
+
+int TowerSnapshot::GetPlayer()
+{
+	return m_player;
+}
+
+int TowerSnapshot::GetTurn()
+{
+	return m_turn;
+}
+
+int TowerSnapshot::GetPhase()
+{
+	return m_phase;
 }

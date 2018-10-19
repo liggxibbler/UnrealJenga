@@ -52,7 +52,7 @@ void AJengaBrickManager::SpawnBricks()
 		//m_jengaBricks[i]->m_mesh->SetSimulatePhysics(false);		
 	}
 
-	m_initialSnapshot = GetSnapshot();
+	m_initialSnapshot = GetSnapshot(0, 0, 0);
 }
 
 void AJengaBrickManager::InitializeBricks()
@@ -126,9 +126,9 @@ FRotator AJengaBrickManager::GetInitialRotation(int i)
 	return FRotator(0, (level % 2 == 0) ? 0 : 90, 0);
 }
 
-TowerSnapshot* AJengaBrickManager::GetSnapshot()
+TowerSnapshot* AJengaBrickManager::GetSnapshot(int player, int turn, int phase)
 {
-	return new TowerSnapshot(GetLocationSnapshot(), GetRotationSnapshot());
+	return new TowerSnapshot(GetLocationSnapshot(), GetRotationSnapshot(), player, turn, phase);
 }
 
 void AJengaBrickManager::ApplySnapshot(TowerSnapshot* snapshot)

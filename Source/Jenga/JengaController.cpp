@@ -40,11 +40,9 @@ void AJengaController::Tick(float DeltaTime)
 		}
 		break;
 	case Phase::PhaseRemovalSlide:
-		if (m_pc->WasInputKeyJustPressed(EKeys::BackSpace))
+		if (RemoveBrick())
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Cancelling selection!"));
-			m_brickManager->ResetSelections();
-			m_phase = Phase::PhaseRemovalSelect;
+			OnBrickRemoved();
 		}
 		break;	
 	case Phase::PhasePlacement:
@@ -63,7 +61,7 @@ void AJengaController::Tick(float DeltaTime)
 		break;
 	}
 
-	if (m_pc->WasInputKeyJustPressed(EKeys::Right))
+	if (m_pc->WasInputKeyJustPressed(EKeys::SpaceBar))
 	{
 		switch (m_phase)
 		{		
@@ -175,10 +173,48 @@ bool AJengaController::SelectBrick()
 	return false;
 }
 
+bool AJengaController::RemoveBrick()
+{
+	if (m_pc->WasInputKeyJustPressed(EKeys::BackSpace))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Cancelling selection!"));
+
+		m_brickManager->ResetSelections();
+		m_phase = Phase::PhaseRemovalSelect;
+	}
+	else
+	{
+		FVector direction;
+		if (m_pc->IsInputKeyDown(EKeys::Up))
+		{
+			direction.X += 1;
+		}
+		if (m_pc->IsInputKeyDown(EKeys::Down))
+		{
+			direction.X -= 1;
+		}
+		if (m_pc->IsInputKeyDown(EKeys::Right))
+		{
+			direction.Y += 1;
+		}
+		if (m_pc->IsInputKeyDown(EKeys::Left))
+		{
+			direction.Y -= 1;
+		}
+		
+		direction.Normalize();
+		m_brickManager->MoveSelectedBrick(direction);
+	}
+
+	return m_brickManager->IsBrickRemoved();
+}
 
 void AJengaController::OnBeginTurn()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Beginning next turn!"));
+	auto str = FString::FromInt(m_currentPlayer);
+	auto str2 = FString("Player ") + str;
+	auto i = FCString::Atoi(str.GetCharArray().GetData());
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, str2);
 
 	OnBeginTurnEvent();
 

@@ -71,6 +71,7 @@ public:
 	void GameOver();
 
 	bool SelectBrick();
+	bool RemoveBrick();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameControllerEvents")
 		void OnBeginTurnEvent();

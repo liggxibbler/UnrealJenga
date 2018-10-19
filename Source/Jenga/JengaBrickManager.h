@@ -42,28 +42,33 @@ public:
 	void SelectBrick(AJengaBrick* brick);
 	void HoverBrick(AJengaBrick* brick);
 	void ResetSelections();
+	void MoveSelectedBrick(FVector direction);
+	bool IsBrickRemoved();
 	
 private:
 	AJengaBrick* m_jengaBricks[BRICK_COUNT];		
 
 	UPROPERTY(EditAnywhere)
-	float m_thickness;
+		float m_thickness;
 
 	UPROPERTY(EditAnywhere)
-	float m_spawnZModifier = 1.1;
+		float m_brickSpeed = 1;
 
 	UPROPERTY(EditAnywhere)
-	float m_spawnXYModifier = 1.05;
+		float m_spawnZModifier = 1.1;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AJengaBrick> m_brickTemplate;
+		float m_spawnXYModifier = 1.05;
 
 	UPROPERTY(EditAnywhere)
-	UMaterialInterface* m_normalMaterial;
+		TSubclassOf<AJengaBrick> m_brickTemplate;
+
 	UPROPERTY(EditAnywhere)
-	UMaterialInterface* m_selectedMaterial;
+		UMaterialInterface* m_normalMaterial;
 	UPROPERTY(EditAnywhere)
-	UMaterialInterface* m_hoverMaterial;
+		UMaterialInterface* m_selectedMaterial;
+	UPROPERTY(EditAnywhere)
+		UMaterialInterface* m_hoverMaterial;
 
 	FVector* GetLocationSnapshot();
 	FRotator* GetRotationSnapshot();
@@ -73,6 +78,7 @@ private:
 
 	AJengaBrick* m_selectedBrick = nullptr;
 	AJengaBrick* m_hoveredBrick = nullptr;
+	FVector m_selectedInitialLocation;
 
 	bool m_areBricksSpawned = false;
 

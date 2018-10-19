@@ -170,6 +170,7 @@ bool AJengaBrickManager::HasTowerFallen(TowerSnapshot* snapshot)
 void AJengaBrickManager::SelectBrick(AJengaBrick* brick)
 {
 	m_selectedBrick = brick;
+	m_selectedInitialLocation = brick->GetActorLocation();
 	m_selectedBrick->SetMaterial(m_selectedMaterial);
 }
 void AJengaBrickManager::HoverBrick(AJengaBrick* brick)
@@ -197,6 +198,24 @@ void AJengaBrickManager::ResetSelections()
 		SetMaterial(m_selectedBrick, false);
 		m_selectedBrick = nullptr;
 	}
+}
+void AJengaBrickManager::MoveSelectedBrick(FVector direction)
+{
+	FVector location = m_selectedBrick->GetActorLocation();
+	FVector displacement = direction.X * m_selectedBrick->GetActorForwardVector() +
+		direction.Y * m_selectedBrick->GetActorRightVector();
+	m_selectedBrick->SetActorLocation(location + m_brickSpeed * displacement);
+}
+bool AJengaBrickManager::IsBrickRemoved()
+{
+	if (nullptr != m_selectedBrick)
+	{
+		FVector diff = m_selectedBrick->GetActorLocation() - m_selectedInitialLocation;		
+		return diff.SizeSquared() >= 300 * m_thickness * m_thickness; // 300 = 250 + 50. 250 is smallest squared distance where brick is definitely not overlapping with its initial bounding box
+		// TODO a more precise (and decent) check would be in the brick's local coordinate system - will do that if there's time
+	}
+
+	return false;
 }
 
 void AJengaBrickManager::SetMaterial(AJengaBrick* brick, bool selected)

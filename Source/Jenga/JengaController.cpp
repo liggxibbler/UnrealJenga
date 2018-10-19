@@ -133,7 +133,7 @@ void AJengaController::NewGame(int playerCount)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, TEXT("Starting new game"));
 	ClearStacks();
-	m_playerCount = playerCount;
+	m_playerCount = playerCount >= 1 ? playerCount : 1;
 	m_brickManager->SpawnBricks();
 	OnBeginTurn();
 }

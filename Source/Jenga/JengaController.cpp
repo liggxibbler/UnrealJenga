@@ -79,7 +79,7 @@ void AJengaController::Tick(float DeltaTime)
 
 	if (m_pc->WasInputKeyJustPressed(EKeys::Enter))
 	{
-		m_brickManager->Explode();
+		m_brickManager->Explode();		
 	}
 
 	if (m_pc->WasInputKeyJustPressed(EKeys::V))
@@ -159,9 +159,7 @@ bool AJengaController::SelectBrick()
 
 				if (m_pc->WasInputKeyJustReleased(EKeys::LeftMouseButton))
 				{				
-					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick selected!"));
-					m_brickManager->SelectBrick((AJengaBrick*)hit.GetActor());
-					return true;
+					return m_brickManager->SelectBrick((AJengaBrick*)hit.GetActor());					
 				}
 			}
 		}
@@ -211,6 +209,8 @@ bool AJengaController::RemoveBrick()
 
 void AJengaController::OnBeginTurn()
 {
+	SwitchToRemovalCamera();
+
 	auto str = FString::FromInt(m_currentPlayer);
 	auto str2 = FString("Player ") + str;
 	auto i = FCString::Atoi(str.GetCharArray().GetData());
@@ -242,6 +242,7 @@ void AJengaController::OnFinishTurn()
 void AJengaController::OnBrickRemoved()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick removed!"));
+	SwitchToPlacementCamera();
 	m_phase = PhasePlacement;
 }
 void AJengaController::OnBrickPlaced()
@@ -319,4 +320,14 @@ TowerSnapshot* AJengaController::LastStableSnapshot()
 		return m_brickManager->GetInitialSnapshot();
 	}
 	
+}
+
+void AJengaController::SwitchToPlacementCamera()
+{
+	m_pc->SetViewTargetWithBlend(m_camera, .3);
+}
+void AJengaController::SwitchToRemovalCamera()
+{
+	m_camera->SetActorLocation(FVector(0, 0, m_brickManager->GetMaxHeight() + m_cameraOffset));
+	m_pc->SetViewTargetWithBlend(m_pc->GetPawn(), .3);
 }

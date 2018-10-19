@@ -170,11 +170,20 @@ bool AJengaBrickManager::HasTowerFallen(TowerSnapshot* snapshot)
 }
 
 
-void AJengaBrickManager::SelectBrick(AJengaBrick* brick)
+bool AJengaBrickManager::SelectBrick(AJengaBrick* brick)
 {
-	m_selectedBrick = brick;
-	m_selectedInitialLocation = brick->GetActorLocation();
-	m_selectedBrick->SetMaterial(m_selectedMaterial);
+	if (GetLevel(brick->GetActorLocation().Z) < GetMaxLevel() - 1)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick selected!"));
+		m_selectedBrick = brick;
+		m_selectedInitialLocation = brick->GetActorLocation();
+		m_selectedBrick->SetMaterial(m_selectedMaterial);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 void AJengaBrickManager::HoverBrick(AJengaBrick* brick)
 {

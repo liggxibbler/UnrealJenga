@@ -39,7 +39,7 @@ public:
 
 	bool HasTowerFallen(TowerSnapshot* snapshot);
 
-	void SelectBrick(AJengaBrick* brick);
+	bool SelectBrick(AJengaBrick* brick);
 	void HoverBrick(AJengaBrick* brick);
 	void ResetSelections();
 	void MoveSelectedBrick(FVector direction);

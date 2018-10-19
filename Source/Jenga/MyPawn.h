@@ -17,7 +17,7 @@ public:
 	AMyPawn();
 
 	UPROPERTY(EditAnywhere)
-	UCameraComponent* m_camera;
+		UCameraComponent* m_camera;
 
 	UPROPERTY(EditAnywhere, Category = "Params")
 		float m_radius = 600.0;

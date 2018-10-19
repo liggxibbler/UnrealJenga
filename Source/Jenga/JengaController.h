@@ -33,10 +33,16 @@ private:
 	std::stack<TowerSnapshot*> m_redoStack;
 	
 	UPROPERTY(EditAnywhere)
-	AJengaBrickManager* m_brickManager;
+		AJengaBrickManager* m_brickManager;
 
 	UPROPERTY(EditAnywhere)
-	int m_playerCount = 1;
+		AActor* m_camera;
+
+	UPROPERTY(EditAnywhere)
+		int m_playerCount = 1;
+
+	UPROPERTY(EditAnywhere)
+		float m_cameraOffset = 200;
 
 	Phase m_phase = PhaseInit;
 	int m_turn = 0;
@@ -48,6 +54,8 @@ private:
 	float m_turnEndTimer;
 
 	TowerSnapshot* LastStableSnapshot();
+	void SwitchToPlacementCamera();
+	void SwitchToRemovalCamera();
 
 public:	
 	// Sets default values for this actor's properties

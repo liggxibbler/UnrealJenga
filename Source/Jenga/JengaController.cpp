@@ -187,19 +187,19 @@ bool AJengaController::RemoveBrick()
 		FVector direction;
 		if (m_pc->IsInputKeyDown(EKeys::Up))
 		{
-			direction.X += 1;
+			direction.Y += 1;
 		}
 		if (m_pc->IsInputKeyDown(EKeys::Down))
 		{
-			direction.X -= 1;
+			direction.Y -= 1;
 		}
 		if (m_pc->IsInputKeyDown(EKeys::Right))
 		{
-			direction.Y += 1;
+			direction.X += 1;
 		}
 		if (m_pc->IsInputKeyDown(EKeys::Left))
 		{
-			direction.Y -= 1;
+			direction.X -= 1;
 		}
 		
 		direction.Normalize();

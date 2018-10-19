@@ -211,8 +211,16 @@ bool AJengaBrickManager::IsBrickRemoved()
 	if (nullptr != m_selectedBrick)
 	{
 		FVector diff = m_selectedBrick->GetActorLocation() - m_selectedInitialLocation;		
-		return diff.SizeSquared() >= 300 * m_thickness * m_thickness; // 300 = 250 + 50. 250 is smallest squared distance where brick is definitely not overlapping with its initial bounding box
-		// TODO a more precise (and decent) check would be in the brick's local coordinate system - will do that if there's time
+		
+		auto right = m_selectedBrick->GetActorRightVector();
+		auto forward = m_selectedBrick->GetActorRightVector();
+		auto diffOnRight = diff.ProjectOnTo(right);
+		auto diffOnForward = diff - diffOnRight;
+		
+		bool isOutFromRight = diffOnRight.Size() > m_thickness * 15 * 1.2;
+		bool isOutFromForward = diffOnForward.Size() > m_thickness * 5 * 1.2;
+
+		return isOutFromForward || isOutFromRight;
 	}
 
 	return false;

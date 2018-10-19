@@ -63,10 +63,13 @@ void AJengaBrickManager::InitializeBricks()
 
 void AJengaBrickManager::Explode()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Exploding"));
-	for (int i = 0; i < BRICK_COUNT - 1; ++i)
+	if (m_areBricksSpawned)
 	{
-		m_jengaBricks[i]->m_mesh->SetPhysicsLinearVelocity(m_jengaBricks[i + 1]->GetActorLocation());
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Exploding"));
+		for (int i = 0; i < BRICK_COUNT - 1; ++i)
+		{
+			m_jengaBricks[i]->m_mesh->SetPhysicsLinearVelocity(m_jengaBricks[i + 1]->GetActorLocation());
+		}
 	}
 }
 

@@ -211,12 +211,17 @@ void AJengaBrickManager::ResetSelections()
 		m_selectedBrick = nullptr;
 	}
 }
-void AJengaBrickManager::MoveSelectedBrick(FVector direction)
+void AJengaBrickManager::MoveSelectedBrickLocal(FVector direction)
 {
 	FVector location = m_selectedBrick->GetActorLocation();
 	FVector displacement = direction.X * m_selectedBrick->GetActorForwardVector() +
 		direction.Y * m_selectedBrick->GetActorRightVector();
 	m_selectedBrick->SetActorLocation(location + m_brickSpeed * displacement);
+}
+void AJengaBrickManager::MoveSelectedBrickWorld(FVector direction)
+{
+	FVector location = m_selectedBrick->GetActorLocation();	
+	m_selectedBrick->SetActorLocation(location + m_brickSpeed * direction);
 }
 bool AJengaBrickManager::IsBrickRemoved()
 {
@@ -240,10 +245,18 @@ bool AJengaBrickManager::IsBrickRemoved()
 
 void AJengaBrickManager::PrepSelectedBrick()
 {
-	FVector newPosition(0, 0, GetMaxHeight() + m_thickness * 3 * 1.75);
-	m_selectedBrick->SetActorLocation(newPosition);
+	if (GetTopLevelCount() == 3)
+	{
+		FVector newPosition(0, 0, GetMaxHeight() + m_thickness * 3 * 2.1);
+		m_selectedBrick->SetActorLocation(newPosition);
+	}
+	else
+	{
+		FVector newPosition(0, 0, GetMaxHeight() + m_thickness * 3 * (2.1 - 1));	// NOTE I'm not dull, wrote it this way to remember why :D
+		m_selectedBrick->SetActorLocation(newPosition);
+	}
 	
-	FRotator newRotator = GetInitialRotation(GetMaxLevel() * 3);	// TODO overload GetInitialRotation to take a level param
+	FRotator newRotator = GetInitialRotation((GetMaxLevel() + 1) * 3);	// TODO overload GetInitialRotation to take a level param
 	m_selectedBrick->SetActorRotation(newRotator);
 
 	m_selectedBrick->m_mesh->SetSimulatePhysics(false);
@@ -252,6 +265,20 @@ void AJengaBrickManager::PrepSelectedBrick()
 void AJengaBrickManager::ReleaseSelectedBrick()
 {
 	m_selectedBrick->m_mesh->SetSimulatePhysics(true);
+}
+
+int AJengaBrickManager::GetTopLevelCount()
+{
+	int ret = 0;
+	int maxLevel = GetMaxLevel();
+	for (int i = 0; i < BRICK_COUNT; ++i)
+	{
+		if (GetLevel(m_jengaBricks[i]->GetActorLocation().Z) == maxLevel)
+		{
+			++ret;
+		}
+	}
+	return ret;
 }
 
 void AJengaBrickManager::SetMaterial(AJengaBrick* brick, bool selected)

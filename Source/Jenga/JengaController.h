@@ -80,6 +80,7 @@ public:
 
 	bool SelectBrick();
 	bool RemoveBrick();
+	bool PlaceBrick();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameControllerEvents")
 		void OnBeginTurnEvent();

@@ -46,9 +46,8 @@ void AJengaController::Tick(float DeltaTime)
 		}
 		break;	
 	case Phase::PhasePlacement:
-		if (m_pc->WasInputKeyJustReleased(EKeys::LeftMouseButton))
+		if (PlaceBrick())
 		{
-			m_brickManager->ReleaseSelectedBrick();
 			OnBrickPlaced();
 		}
 		break;
@@ -82,7 +81,7 @@ void AJengaController::Tick(float DeltaTime)
 		}
 	}
 
-	if (m_pc->WasInputKeyJustPressed(EKeys::Enter))
+	if (m_pc->WasInputKeyJustPressed(EKeys::X))
 	{
 		m_brickManager->Explode();		
 	}
@@ -206,10 +205,42 @@ bool AJengaController::RemoveBrick()
 		}
 		
 		direction.Normalize();
-		m_brickManager->MoveSelectedBrick(direction);
+		m_brickManager->MoveSelectedBrickLocal(direction);
 	}
 
 	return m_brickManager->IsBrickRemoved();
+}
+
+bool AJengaController::PlaceBrick()
+{
+	FVector direction(0,0,0);
+	if (m_pc->IsInputKeyDown(EKeys::W))
+	{
+		direction.X += 1;
+	}
+	if (m_pc->IsInputKeyDown(EKeys::S))
+	{
+		direction.X -= 1;
+	}
+	if (m_pc->IsInputKeyDown(EKeys::D))
+	{
+		direction.Y += 1;
+	}
+	if (m_pc->IsInputKeyDown(EKeys::A))
+	{
+		direction.Y -= 1;
+	}
+
+	direction.Normalize();
+	m_brickManager->MoveSelectedBrickWorld(direction);
+
+	if (m_pc->WasInputKeyJustReleased(EKeys::Enter))
+	{
+		m_brickManager->ReleaseSelectedBrick();
+		return true;
+	}
+
+	return false;
 }
 
 void AJengaController::OnBeginTurn()

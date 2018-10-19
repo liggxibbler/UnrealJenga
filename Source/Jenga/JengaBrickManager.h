@@ -42,11 +42,14 @@ public:
 	bool SelectBrick(AJengaBrick* brick);
 	void HoverBrick(AJengaBrick* brick);
 	void ResetSelections();
-	void MoveSelectedBrick(FVector direction);
+	void MoveSelectedBrickLocal(FVector direction);
+	void MoveSelectedBrickWorld(FVector direction);
 	bool IsBrickRemoved();
 	
 	void PrepSelectedBrick();
 	void ReleaseSelectedBrick();
+
+	int GetTopLevelCount();
 
 private:
 	AJengaBrick* m_jengaBricks[BRICK_COUNT];		
@@ -72,6 +75,10 @@ private:
 		UMaterialInterface* m_selectedMaterial;
 	UPROPERTY(EditAnywhere)
 		UMaterialInterface* m_hoverMaterial;
+
+	bool m_isTopLevelFilled[3];
+	FVector m_topLevelLocations[3];
+	int m_currentTopLevelIndex;
 
 	FVector* GetLocationSnapshot();
 	FRotator* GetRotationSnapshot();

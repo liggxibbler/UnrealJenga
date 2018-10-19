@@ -111,14 +111,14 @@ void AJengaController::ClearStacks()
 	while (!m_undoStack.empty())
 	{
 		auto top = m_undoStack.top();
-		delete top;
+		delete top.tower;
 		m_undoStack.pop();
 	}
 
 	while (!m_redoStack.empty())
 	{
 		auto top = m_redoStack.top();
-		delete top;
+		delete top.tower;
 		m_redoStack.pop();
 	}
 }
@@ -305,13 +305,13 @@ void AJengaController::OnBrickPlaced()
 void AJengaController::PushUndoStack()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Push Undo Stack"));
-	m_undoStack.push(m_brickManager->GetSnapshot());
+	m_undoStack.push({ m_brickManager->GetSnapshot(), m_currentPlayer, m_turn, m_phase });
 }
 
 void AJengaController::PushRedoStack()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Push Redo Stack"));
-	m_redoStack.push(m_brickManager->GetSnapshot());
+	m_redoStack.push({m_brickManager->GetSnapshot(), m_currentPlayer, m_turn, m_phase });
 }
 
 void AJengaController::Undo()
@@ -328,7 +328,7 @@ void AJengaController::Undo()
 
 		PushRedoStack();
 		auto snapshot = m_undoStack.top();
-		m_brickManager->ApplySnapshot(snapshot);		
+		m_brickManager->ApplySnapshot(snapshot.tower);		
 		m_undoStack.pop();
 	}
 }
@@ -347,7 +347,7 @@ void AJengaController::Redo()
 
 		PushUndoStack();
 		auto snapshot = m_redoStack.top();
-		m_brickManager->ApplySnapshot(snapshot);
+		m_brickManager->ApplySnapshot(snapshot.tower);
 		m_redoStack.pop();
 	}
 }
@@ -363,7 +363,7 @@ TowerSnapshot* AJengaController::LastStableSnapshot()
 {
 	if (!m_undoStack.empty())
 	{
-		return m_undoStack.top();
+		return m_undoStack.top().tower;
 	}
 	else
 	{

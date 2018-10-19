@@ -29,9 +29,18 @@ public:
 		PhaseGameOver,
 	};
 
+	struct Snapshot
+	{
+	public:
+		TowerSnapshot* tower;
+		int player;
+		int turn;
+		Phase phase;
+	};
+
 private:
-	std::stack<TowerSnapshot*> m_undoStack;
-	std::stack<TowerSnapshot*> m_redoStack;
+	std::stack<Snapshot> m_undoStack;
+	std::stack<Snapshot> m_redoStack;
 	
 	UPROPERTY(EditAnywhere)
 		AJengaBrickManager* m_brickManager;

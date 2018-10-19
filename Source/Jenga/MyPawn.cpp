@@ -22,10 +22,7 @@ AMyPawn::AMyPawn()
 	m_camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	m_camera->SetupAttachment(RootComponent);
 
-	m_theta = PI / 6;
-	m_phi = 3 * PI / 2;
-
-	UpdatePosAndRot();
+	ResetRotations();
 }
 
 // Called when the game starts or when spawned
@@ -54,6 +51,8 @@ void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AMyPawn::RotateUp(float value)
 {
+	if (!m_isActive)
+		return;
 	//AddMovementInput(GetActorForwardVector(), value);
 	m_theta -= value * m_sensitivity;
 	
@@ -71,6 +70,9 @@ void AMyPawn::RotateUp(float value)
 
 void AMyPawn::RotateRight(float value)
 {
+	if (!m_isActive)
+		return;
+
 	//AddMovementInput(GetActorRightVector(), value);
 	m_phi -= value * m_sensitivity;
 
@@ -99,7 +101,23 @@ void AMyPawn::UpdatePosAndRot()
 	auto q1 = FQuat(FVector(0, 0, 1), PI + m_phi);
 	auto q2 = FQuat(FVector(-loc.Y, loc.X, 0), -m_theta * 0);
 	auto q3 = q1 * q2;
-	m_camera->SetWorldRotation(q3);
-	
+	m_camera->SetWorldRotation(q3);	
 }
 
+void AMyPawn::SetRadius(float radius)
+{
+	m_radius = radius;
+}
+
+void AMyPawn::ResetRotations()
+{
+	m_theta = PI / 6;
+	m_phi = 3 * PI / 2;
+
+	UpdatePosAndRot();
+}
+
+void AMyPawn::SetActive(bool active)
+{
+	m_isActive = active;
+}

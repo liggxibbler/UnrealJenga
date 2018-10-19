@@ -4,7 +4,6 @@
 #include "Engine/World.h"
 #include "EngineGlobals.h"
 
-
 // Sets default values
 AJengaController::AJengaController()
 {
@@ -22,6 +21,7 @@ void AJengaController::BeginPlay()
 	
 	m_pc = GetWorld()->GetFirstPlayerController();
 	m_pc->bShowMouseCursor = true;
+	m_pawn = (AMyPawn*)(m_pc->GetPawn());
 }
 
 // Called every frame
@@ -139,7 +139,10 @@ void AJengaController::NewGame(int playerCount)
 
 void AJengaController::GameOver()
 {
+	FString loser = FString::FromInt(m_currentPlayer);
+	FString message = FString("Player ") + loser + FString(" is the loser!");
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Game Over"));
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, message);
 	m_phase = Phase::PhaseGameOver;
 	OnGameOver();
 }
@@ -231,6 +234,11 @@ bool AJengaController::PlaceBrick()
 		direction.Y -= 1;
 	}
 
+	if (m_pc->WasInputKeyJustReleased(EKeys::R))
+	{
+		m_brickManager->ChangeSelectedBrickRotation();
+	}
+
 	direction.Normalize();
 	m_brickManager->MoveSelectedBrickWorld(direction);
 
@@ -245,6 +253,8 @@ bool AJengaController::PlaceBrick()
 
 void AJengaController::OnBeginTurn()
 {
+	m_pawn->SetActive(true);
+
 	SwitchToRemovalCamera();
 
 	auto str = FString::FromInt(m_currentPlayer);
@@ -284,6 +294,8 @@ void AJengaController::OnBrickRemoved()
 }
 void AJengaController::OnBrickPlaced()
 {
+	m_pawn->SetRadius((m_brickManager->GetMaxLevel() + 2) * 3 * m_brickManager->GetThickness());
+	m_pawn->ResetRotations();
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick placed!"));
 	SwitchToRemovalCamera();
 	m_phase = PhaseWait;

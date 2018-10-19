@@ -27,6 +27,8 @@ public:
 	float m_theta = 30;
 	float m_phi = 270;
 
+	bool m_isActive = true;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -42,4 +44,8 @@ public:
 	void RotateRight(float value);
 	
 	void UpdatePosAndRot();
+	void SetRadius(float radius);
+	void ResetRotations();
+
+	void SetActive(bool active);
 };

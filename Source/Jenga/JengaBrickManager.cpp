@@ -153,15 +153,19 @@ bool AJengaBrickManager::HasTowerFallen(TowerSnapshot* snapshot)
 	float maxHeight = GetMaxHeight(snapshot);
 	float maxLevel = GetMaxLevel(snapshot);
 	float diffSqr = m_thickness * 3 * m_thickness * 3;
-
+	
 	for (int i = 0; i < BRICK_COUNT; ++i)
 	{
 		if (GetLevel(m_jengaBricks[i]->GetActorLocation().Z) != maxLevel)
 		{
-			float distSqr = FVector::DistSquared(snapshot->GetSnapshot(i).location, m_jengaBricks[i]->GetActorLocation());
-			if (distSqr > diffSqr)
+			FVector diff = m_jengaBricks[i]->GetActorLocation() - snapshot->GetSnapshot(i).location;
+			if (diff.Z < 0)
 			{
-				return true;
+				float distSqr = diff.SizeSquared();
+				if (distSqr > diffSqr)
+				{
+					return true;
+				}
 			}
 		}
 	}
@@ -256,15 +260,19 @@ void AJengaBrickManager::PrepSelectedBrick()
 		m_selectedBrick->SetActorLocation(newPosition);
 	}
 	
-	FRotator newRotator = GetInitialRotation((GetMaxLevel() + 1) * 3);	// TODO overload GetInitialRotation to take a level param
-	m_selectedBrick->SetActorRotation(newRotator);
-
+	m_selectedBrick->SetActorRotation(FRotator(0, m_selectedBrickRotation, 0));
 	m_selectedBrick->m_mesh->SetSimulatePhysics(false);
 }
 
 void AJengaBrickManager::ReleaseSelectedBrick()
 {
 	m_selectedBrick->m_mesh->SetSimulatePhysics(true);
+}
+
+void AJengaBrickManager::ChangeSelectedBrickRotation()
+{
+	m_selectedBrickRotation += 90;
+	m_selectedBrick->SetActorRotation(FRotator(0, m_selectedBrickRotation, 0));	
 }
 
 int AJengaBrickManager::GetTopLevelCount()
@@ -327,4 +335,9 @@ float AJengaBrickManager::GetMaxHeight(TowerSnapshot* snapshot)
 int AJengaBrickManager::GetMaxLevel(TowerSnapshot* snapshot)
 {
 	return GetLevel(GetMaxHeight(snapshot));
+}
+
+float AJengaBrickManager::GetThickness()
+{
+	return m_thickness;
 }

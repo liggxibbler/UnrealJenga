@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerController.h"
 
 #include "JengaBrickManager.h"
+#include "MyPawn.h"
 
 #include "JengaController.generated.h"
 
@@ -49,6 +50,7 @@ private:
 	int m_currentPlayer = 0;
 
 	APlayerController* m_pc = nullptr;
+	AMyPawn* m_pawn;
 
 	const float m_turnWaitDuration = 10.0;
 	float m_turnEndTimer;

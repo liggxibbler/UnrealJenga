@@ -48,6 +48,7 @@ public:
 	
 	void PrepSelectedBrick();
 	void ReleaseSelectedBrick();
+	void ChangeSelectedBrickRotation();
 
 	int GetTopLevelCount();
 
@@ -85,6 +86,7 @@ private:
 	AJengaBrick* m_selectedBrick = nullptr;
 	AJengaBrick* m_hoveredBrick = nullptr;
 	FVector m_selectedInitialLocation;
+	float m_selectedBrickRotation = 0;
 
 	bool m_areBricksSpawned = false;
 
@@ -99,4 +101,5 @@ public:
 	int GetMaxLevel();
 	float GetMaxHeight(TowerSnapshot* snapshot);
 	int GetMaxLevel(TowerSnapshot* snapshot);
+	float GetThickness();
 };

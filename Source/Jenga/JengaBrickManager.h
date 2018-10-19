@@ -76,10 +76,6 @@ private:
 	UPROPERTY(EditAnywhere)
 		UMaterialInterface* m_hoverMaterial;
 
-	bool m_isTopLevelFilled[3];
-	FVector m_topLevelLocations[3];
-	int m_currentTopLevelIndex;
-
 	FVector* GetLocationSnapshot();
 	FRotator* GetRotationSnapshot();
 

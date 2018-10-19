@@ -86,6 +86,8 @@ private:
 
 	void SetMaterial(AJengaBrick* brick, bool selected);
 
+public:
+
 	int GetLevel(float height);
 	float GetMaxHeight();
 	int GetMaxLevel();

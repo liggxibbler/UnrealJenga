@@ -27,8 +27,8 @@ public:
 	void SetMaterial(UMaterialInterface* material);
 
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* m_mesh;
+		UStaticMeshComponent* m_mesh;
 
 	UPROPERTY(EditAnywhere)
-	UBoxComponent* m_physics;
+		UBoxComponent* m_physics;
 };

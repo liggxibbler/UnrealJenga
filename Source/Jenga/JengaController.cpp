@@ -46,6 +46,11 @@ void AJengaController::Tick(float DeltaTime)
 		}
 		break;	
 	case Phase::PhasePlacement:
+		if (m_pc->WasInputKeyJustReleased(EKeys::LeftMouseButton))
+		{
+			m_brickManager->ReleaseSelectedBrick();
+			OnBrickPlaced();
+		}
 		break;
 	case Phase::PhaseWait:
 		// Count down from 10 seconds
@@ -243,6 +248,7 @@ void AJengaController::OnBrickRemoved()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick removed!"));
 	SwitchToPlacementCamera();
+	m_brickManager->PrepSelectedBrick();
 	m_phase = PhasePlacement;
 }
 void AJengaController::OnBrickPlaced()

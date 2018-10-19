@@ -238,6 +238,22 @@ bool AJengaBrickManager::IsBrickRemoved()
 	return false;
 }
 
+void AJengaBrickManager::PrepSelectedBrick()
+{
+	FVector newPosition(0, 0, GetMaxHeight() + m_thickness * 3 * 1.75);
+	m_selectedBrick->SetActorLocation(newPosition);
+	
+	FRotator newRotator = GetInitialRotation(GetMaxLevel() * 3);	// TODO overload GetInitialRotation to take a level param
+	m_selectedBrick->SetActorRotation(newRotator);
+
+	m_selectedBrick->m_mesh->SetSimulatePhysics(false);
+}
+
+void AJengaBrickManager::ReleaseSelectedBrick()
+{
+	m_selectedBrick->m_mesh->SetSimulatePhysics(true);
+}
+
 void AJengaBrickManager::SetMaterial(AJengaBrick* brick, bool selected)
 {
 	brick->m_mesh->SetMaterial(0, selected ? m_selectedMaterial : m_normalMaterial);

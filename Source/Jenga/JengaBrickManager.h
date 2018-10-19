@@ -45,6 +45,9 @@ public:
 	void MoveSelectedBrick(FVector direction);
 	bool IsBrickRemoved();
 	
+	void PrepSelectedBrick();
+	void ReleaseSelectedBrick();
+
 private:
 	AJengaBrick* m_jengaBricks[BRICK_COUNT];		
 

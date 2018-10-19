@@ -285,6 +285,7 @@ void AJengaController::OnBrickRemoved()
 void AJengaController::OnBrickPlaced()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick placed!"));
+	SwitchToRemovalCamera();
 	m_phase = PhaseWait;
 	m_turnEndTimer = m_turnWaitDuration;	
 }

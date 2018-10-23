@@ -14,7 +14,7 @@ class JENGA_API TowerSnapshot
 {
 public:
 	TowerSnapshot();
-	TowerSnapshot(FVector locations[], FRotator rotations[], int currentPlayer, int currentTurn, int currentPhase);
+	TowerSnapshot(FVector locations[], FRotator rotations[]);
 	
 	~TowerSnapshot();
 
@@ -26,14 +26,6 @@ public:
 
 	BrickState GetSnapshot(int idx);
 
-	int GetPlayer();
-	int GetTurn();
-	int GetPhase();
-
-	
 private:
 	BrickState m_snapshot[BRICK_COUNT];
-	int m_player;
-	int m_turn;
-	int m_phase;
 };

@@ -100,6 +100,4 @@ public:
 		void Redo();
 
 	bool CheckLoseStatus();
-
-	void ApplySnapshot(TowerSnapshot* snapshot);
 };

@@ -31,8 +31,7 @@ void AJengaController::Tick(float DeltaTime)
 
 	switch (m_phase)
 	{
-	case Phase::PhaseInit:
-		m_phase = PhaseRemovalSelect;
+	case Phase::PhaseInit:		
 		break;
 	case Phase::PhaseRemovalSelect:
 		if (SelectBrick())
@@ -85,6 +84,11 @@ void AJengaController::Tick(float DeltaTime)
 	if (m_pc->WasInputKeyJustPressed(EKeys::X))
 	{
 		m_brickManager->Explode();		
+	}
+
+	if (m_pc->WasInputKeyJustPressed(EKeys::V))
+	{
+		PushUndoStack();
 	}
 
 	if (m_pc->WasInputKeyJustPressed(EKeys::L))
@@ -262,7 +266,7 @@ void AJengaController::OnBeginTurn()
 
 	m_brickManager->ResetSelections();
 
-	m_phase = PhaseRemovalSelect;
+	m_phase = PhaseRemovalSelect;	
 }
 void AJengaController::OnFinishTurn()
 {	
@@ -283,7 +287,6 @@ void AJengaController::OnFinishTurn()
 
 void AJengaController::OnBrickRemoved()
 {
-	PushUndoStack();
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick removed!"));
 	SwitchToPlacementCamera();
 	m_brickManager->PrepSelectedBrick();
@@ -291,7 +294,6 @@ void AJengaController::OnBrickRemoved()
 }
 void AJengaController::OnBrickPlaced()
 {
-	PushUndoStack();
 	m_pawn->SetRadius((m_brickManager->GetMaxLevel() + 2) * 3 * m_brickManager->GetThickness());
 	m_pawn->ResetRotations();
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Brick placed!"));
@@ -303,49 +305,49 @@ void AJengaController::OnBrickPlaced()
 void AJengaController::PushUndoStack()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Push Undo Stack"));
-	m_undoStack.push(m_brickManager->GetSnapshot(m_currentPlayer, m_turn, m_phase));
+	m_undoStack.push(m_brickManager->GetSnapshot());
 }
 
 void AJengaController::PushRedoStack()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Push Redo Stack"));
-	m_redoStack.push(m_brickManager->GetSnapshot(m_currentPlayer, m_turn, m_phase));
+	m_redoStack.push(m_brickManager->GetSnapshot());
 }
 
 void AJengaController::Undo()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Pop Undo Stack"));
 	if (m_undoStack.empty())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Nothing to undo!"));
+		// Nag about it
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Pop Undo Stack"));
 		--m_turn;
 		m_currentPlayer = m_turn % m_playerCount;
 
 		PushRedoStack();
 		auto snapshot = m_undoStack.top();
-		ApplySnapshot(snapshot);	
+		m_brickManager->ApplySnapshot(snapshot);		
 		m_undoStack.pop();
 	}
 }
 
 void AJengaController::Redo()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Pop Redo Stack"));
 	if (m_redoStack.empty())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Nothing to redo!"));
+		// Nag about it
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Pop Redo Stack"));
 		++m_turn;
 		m_currentPlayer = m_turn % m_playerCount;
 
 		PushUndoStack();
 		auto snapshot = m_redoStack.top();
-		ApplySnapshot(snapshot);
+		m_brickManager->ApplySnapshot(snapshot);
 		m_redoStack.pop();
 	}
 }
@@ -353,20 +355,6 @@ void AJengaController::Redo()
 bool AJengaController::CheckLoseStatus()
 {
 	return m_brickManager->HasTowerFallen(LastStableSnapshot());
-}
-
-void AJengaController::ApplySnapshot(TowerSnapshot* snapshot)
-{
-	m_brickManager->ApplySnapshot(snapshot);
-	m_currentPlayer = snapshot->GetPlayer();
-	m_turn = snapshot->GetTurn();
-	m_phase = (Phase)snapshot->GetPhase();
-	
-	if (m_phase == Phase::PhaseRemovalSelect)
-	{
-		m_brickManager->ResetSelections();
-		SwitchToRemovalCamera();
-	}
 }
 
 // PRIVATE

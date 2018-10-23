@@ -54,7 +54,7 @@ void AJengaController::Tick(float DeltaTime)
 	case Phase::PhaseWait:
 		// Count down from 10 seconds
 		m_turnEndTimer -= DeltaTime;
-		if (m_turnEndTimer <= 0)
+		if (m_turnEndTimer <= 0 || m_pc->WasInputKeyJustPressed(EKeys::SpaceBar))
 		{
 			OnFinishTurn();
 		}
@@ -63,22 +63,6 @@ void AJengaController::Tick(float DeltaTime)
 		break;
 	default:
 		break;
-	}
-
-	if (m_pc->WasInputKeyJustPressed(EKeys::SpaceBar))
-	{
-		switch (m_phase)
-		{		
-		case Phase::PhaseRemovalSlide:
-			OnBrickRemoved();
-			break;
-		case Phase::PhasePlacement:
-			OnBrickPlaced();
-			break;
-		case Phase::PhaseWait:
-			OnFinishTurn();
-			break;
-		}
 	}
 
 	if (m_pc->WasInputKeyJustPressed(EKeys::X))
